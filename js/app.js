@@ -56,42 +56,92 @@ const startGame = () => {
     mediaWidth.addListener(mediaWidthFoo)
     mediaHeight.addListener(mediaHeightFoo)
 
-let spacer = 5.2
-
     //Make buttons on each liberty on the board and assign it an id to keep track of
+    //Also assign event listeners and attributes for onmouseover effect
     for (let i = 0; i < 19; i++) {
         for (let j = 0; j< 19; j++) {
+            //Create div each button
+            var newDiv = document.createElement("div")
+            newDiv.setAttribute("id",`pieceButtonDivi${i}j${j}`)
+            document.getElementById("myDiv").appendChild(newDiv);
+            newDiv.style.position = "absolute"
+            newDiv.style.height = "45px"
+            newDiv.style.width = "45px"
+            newDiv.style.marginLeft = "0px"
+            newDiv.style.marginRight = "0px"
+            newDiv.style.marginTop = "0px"
+            newDiv.style.marginBottom = "0px"
+
+            //I played around with these numbers until the buttons lined up on the board
+            newDiv.style.left = `${0.65 + 5.19*i}%`
+            newDiv.style.top = `${0.65 + 5.19*j}%`
+
             var newButton = document.createElement("button")
             newButton.type = "button"
             newButton.setAttribute("class","pieceButton")
             newButton.setAttribute("id",`i${i}j${j}`)
-            document.getElementById("myDiv").appendChild(newButton);
+            document.getElementById(`pieceButtonDivi${i}j${j}`).appendChild(newButton);
             newButton.style.position = "absolute"
-            newButton.style.right = `${2 + spacer*i}%`
-            newButton.style.top = `${2 + spacer*j}%`
+            
+            newButton.style.width = "25px"
+            newButton.style.height = "25px"
+            newButton.style.backgroundPosition = "center center"
             newButton.style.backgroundImage = 'none'
             newButton.style.background = 'none'
             newButton.style.border = 'none'
+            newButton.style.marginLeft = "0px"
+            newButton.style.marginRight = "0px"
+            newButton.style.marginTop = "0px"
+            newButton.style.marginBottom = "0px"
+            newButton.style.textAlign = "center"
+            newButton.style.verticalAlign = "center"
+            newButton.style.top = "25%"
+            newButton.style.left = "25%"
             newButton.setAttribute("onmouseover","hoverThis(this)")
             newButton.setAttribute("onmouseout","dontHoverThis(this)")
-            newButton.addEventListener("click",function() {game.place();})
+            newButton.addEventListener("click",function() {game.place(this);})
         }
     }
-}
+} //End of the startGame function
 
+//functions used in the startGame function 
+//when mouse enters button
 function hoverThis(obj) {
-    console.log(document.getElementById(obj.id))
-    document.getElementById(obj.id).style.backgroundColor = "#A0A0A0"
+    document.getElementById(obj.id).style.background = "#A0A0A0"
     document.getElementById(obj.id).style.border = "2px solid black"
-    document.getElementById(obj.id).style.width = "1px"
-    document.getElementById(obj.id).style.height = "16px"
+    document.getElementById(obj.id).style.width = "15px"
+    document.getElementById(obj.id).style.height = "15px"
+    document.getElementById(obj.id).style.backgroundSize = "10px 10px"
+    document.getElementById(obj.id).style.backgroundPosition = "center center"
+    document.getElementById(obj.id).style.top = "25%"
+    document.getElementById(obj.id).style.left = "25%"
 }
 
+//when mouse leaves button
 function dontHoverThis(obj) {
     document.getElementById(obj.id).style.background = 'none'
     document.getElementById(obj.id).style.border = 'none'
 }
 
+//Link to the readMe
 const howToLink = () => {
     
+}
+
+//game object
+const game = {
+    place: function(obj) {
+        document.getElementById(obj.id).style.backgroundImage = 'url(images/whitePiece.png)'
+        document.getElementById(obj.id).style.backgroundColor = 'white'
+        document.getElementById(obj.id).style.backgroundSize = "45px 45px"
+        document.getElementById(obj.id).style.border = "1px solid black"
+        document.getElementById(obj.id).style.borderRadius = "15px"
+        document.getElementById(obj.id).style.width = "30px"
+        document.getElementById(obj.id).style.height = "30px"
+        document.getElementById(obj.id).style.left = "10%"
+        document.getElementById(obj.id).style.top = "10%"
+        document.getElementById(obj.id).style.backgroundPosition = "center center"
+        document.getElementById(obj.id).setAttribute("onmouseout","");
+        document.getElementById(obj.id).setAttribute("onmouseover","");
+    }
 }
