@@ -130,8 +130,19 @@ const howToLink = () => {
 
 //game object
 const game = {
+    moveCounter: 0,
+
     place: function(obj) {
-        document.getElementById(obj.id).style.backgroundImage = 'url(images/whitePiece.png)'
+        //Add 1 to the move count
+        this.moveCounter += 1
+
+        //If it is an even numbered move, white goes. Otherwise, black goes. 
+        if (this.moveCounter % 2 === 0) {
+            document.getElementById(obj.id).style.backgroundImage = 'url(images/whitePiece.png)'
+        } else {
+            document.getElementById(obj.id).style.backgroundImage = 'url(images/blackPiece.png)'
+        }
+
         document.getElementById(obj.id).style.backgroundColor = 'white'
         document.getElementById(obj.id).style.backgroundSize = "45px 45px"
         document.getElementById(obj.id).style.border = "1px solid black"
@@ -144,4 +155,5 @@ const game = {
         document.getElementById(obj.id).setAttribute("onmouseout","");
         document.getElementById(obj.id).setAttribute("onmouseover","");
     }
+
 }
