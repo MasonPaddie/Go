@@ -149,8 +149,8 @@ const startGame = () => {
             newDiv.style.marginBottom = "0px"
 
             //I played around with these numbers until the buttons lined up on the board
-            newDiv.style.left = `${0.65 + 5.19*i}%`
-            newDiv.style.top = `${0.65 + 5.19*j}%`
+            newDiv.style.left = `${0.55 + 5.2*i}%`
+            newDiv.style.top = `${0.55 + 5.2*j}%`
 
             var newButton = document.createElement("button")
             newButton.type = "button"
@@ -193,8 +193,8 @@ function hoverThis(obj) {
 
     document.getElementById(obj.id).style.width = "15px"
     document.getElementById(obj.id).style.height = "15px"
-    document.getElementById(obj.id).style.top = "25%"
-    document.getElementById(obj.id).style.left = "25%"
+    document.getElementById(obj.id).style.top = "27%"
+    document.getElementById(obj.id).style.left = "27%"
     } else {
     document.getElementById(obj.id).style.width = "10px"
     document.getElementById(obj.id).style.height = "15px"
@@ -246,8 +246,8 @@ const game = {
             document.getElementById(obj.id).style.width = "30px"
             document.getElementById(obj.id).style.height = "30px"
             document.getElementById(obj.id).style.backgroundPosition = "center center"
-            document.getElementById(obj.id).style.top = "10%"
-            document.getElementById(obj.id).style.left = "10%"
+            document.getElementById(obj.id).style.top = "13%"
+            document.getElementById(obj.id).style.left = "13%"
         } else {
 
             //Styling applied if go board is not 750 pixels across
