@@ -16,13 +16,27 @@ const startGame = () => {
     newDiv.setAttribute("id","myDiv")
     newDiv.setAttribute("class","myDiv")
     newDiv.style.position = "absolute"
-    newDiv.style.width = "750px"
-    newDiv.style.height = "750px"
+    newDiv.style.width = "350px"
+    newDiv.style.height = "350px"
     newDiv.style.marginRight = "10px"
     newDiv.style.marginLeft = "10px"
     newDiv.style.right = "35%"
     newDiv.style.backgroundImage = "url(images/goBoard.png)"
     newDiv.style.backgroundSize = "contain"
+
+    //Set board size based on current screen size
+    console.log(window.innerWidth > 1170) 
+    if (window.innerWidth > 1170) {
+        if (window.innerHeight > 870) {
+            // newDiv.style.width = "750px"
+            // newDiv.style.height = "750px"
+        } 
+    } else {
+            newDiv.style.width = "350px"
+            newDiv.style.height = "350px"
+        }
+
+    
 
     //functions for media query
     const mediaWidthFoo = (mediaWidth) => {
@@ -93,7 +107,7 @@ const startGame = () => {
             for (let i = 0; i < 19; i++) {
                 for (let j = 0; j< 19; j++) {
                     document.getElementById(`pieceButtonDivi${i}j${j}`).style.width = "15px"
-                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.height = "15px"
+                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.height = "20px"
                     document.getElementById(`pieceButtonDivi${i}j${j}`).style.backgroundSize = "15px 15px"
                 }
             }
@@ -110,8 +124,6 @@ const startGame = () => {
         } else {
 
             //Set back to original values if screen goes big
-            document.getElementById("myDiv").style.width = "750px"
-            document.getElementById("myDiv").style.height = "750px"
             document.getElementById("myDiv").style.top = "100px"
             document.getElementById("myDiv").style.marginTop = "0px"
 
@@ -234,7 +246,7 @@ const game = {
         if (this.moveCounter > 0) {
         document.getElementById(buttonId).style.border = "1px solid black"
         }
-        
+
         //Add 1 to the move count
         this.moveCounter += 1
 
