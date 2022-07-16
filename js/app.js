@@ -27,34 +27,112 @@ const startGame = () => {
     //functions for media query
     const mediaWidthFoo = (mediaWidth) => {
         if (mediaWidth.matches) {
-            newDiv.style.width = "350px"
-            newDiv.style.height = "350px"
-            newDiv.style.marginTop = "150px"
+
+            //Change width and height of go board
+            document.getElementById("myDiv").style.width = "350px"
+            document.getElementById("myDiv").style.height = "350px"
+            document.getElementById("myDiv").style.marginTop = "150px"
+            
+            //change width and height of all piece button divs
+            for (let i = 0; i < 19; i++) {
+                for (let j = 0; j< 19; j++) {
+                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.width = "15px"
+                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.height = "15px"
+                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.backgroundSize = "15px 15px"
+                }
+            }
+
+            //align buttons within the div and change size
+            for(let i = 0; i < 361; i++) {
+                document.getElementsByClassName("pieceButton")[i].style.top = "10%"
+                document.getElementsByClassName("pieceButton")[i].style.left = "10%"
+                document.getElementsByClassName("pieceButton")[i].style.width = "15px"
+                document.getElementsByClassName("pieceButton")[i].style.height = "15px"
+                document.getElementsByClassName("pieceButton")[i].style.backgroundSize = "15px 15px"
+                }
+
         } else {
-            newDiv.style.width = "750px"
-            newDiv.style.height = "750px"
-            newDiv.style.top = "100px"
-            newDiv.style.marginTop = "0px"
+
+            //Set back to original values if screen goes big
+            document.getElementById("myDiv").style.width = "750px"
+            document.getElementById("myDiv").style.height = "750px"
+            document.getElementById("myDiv").style.top = "100px"
+            document.getElementById("myDiv").style.marginTop = "0px"
+
+            for (let i = 0; i < 19; i++) {
+                for (let j = 0; j< 19; j++) {
+                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.width = "45px"
+                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.height = "45px"
+                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.backgroundSize = "45px 45px"
+                    
+            }
+            
+            for(let i = 0; i < 361; i++) {
+                document.getElementsByClassName("pieceButton")[i].style.top = "15%"
+                document.getElementsByClassName("pieceButton")[i].style.left = "15%"
+                document.getElementsByClassName("pieceButton")[i].style.width = "30px"
+                document.getElementsByClassName("pieceButton")[i].style.height = "30px"
+                document.getElementsByClassName("pieceButton")[i].style.backgroundSize = "45px 45px"
+                document.getElementsByClassName("pieceButton")[i].style.borderRadius = "15px"
+                }
+            }
         }
     }
 
-    const mediaHeightFoo = (mediaWidth) => {
+    const mediaHeightFoo = (mediaHeight) => {
         if (mediaHeight.matches) {
-            newDiv.style.width = "350px"
-            newDiv.style.height = "350px"
-            newDiv.style.top = "0px"
+
+            //Change width and height of go board
+            document.getElementById("myDiv").style.width = "350px"
+            document.getElementById("myDiv").style.height = "350px"
+            document.getElementById("myDiv").style.marginTop = "150px"
+            
+            //change width and height of all piece button divs
+            for (let i = 0; i < 19; i++) {
+                for (let j = 0; j< 19; j++) {
+                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.width = "15px"
+                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.height = "15px"
+                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.backgroundSize = "15px 15px"
+                }
+            }
+
+            //align buttons within the div and change size
+            for(let i = 0; i < 361; i++) {
+                document.getElementsByClassName("pieceButton")[i].style.top = "10%"
+                document.getElementsByClassName("pieceButton")[i].style.left = "10%"
+                document.getElementsByClassName("pieceButton")[i].style.width = "15px"
+                document.getElementsByClassName("pieceButton")[i].style.height = "15px"
+                document.getElementsByClassName("pieceButton")[i].style.backgroundSize = "15px 15px"
+                }
+
         } else {
-            newDiv.style.width = "750px"
-            newDiv.style.height = "750px"
-            newDiv.style.top = "100px"
+
+            //Set back to original values if screen goes big
+            document.getElementById("myDiv").style.width = "750px"
+            document.getElementById("myDiv").style.height = "750px"
+            document.getElementById("myDiv").style.top = "100px"
+            document.getElementById("myDiv").style.marginTop = "0px"
+
+            for (let i = 0; i < 19; i++) {
+                for (let j = 0; j< 19; j++) {
+                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.width = "45px"
+                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.height = "45px"
+                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.backgroundSize = "45px 45px"
+                    
+            }
+            
+            for(let i = 0; i < 361; i++) {
+                document.getElementsByClassName("pieceButton")[i].style.top = "15%"
+                document.getElementsByClassName("pieceButton")[i].style.left = "15%"
+                document.getElementsByClassName("pieceButton")[i].style.width = "30px"
+                document.getElementsByClassName("pieceButton")[i].style.height = "30px"
+                document.getElementsByClassName("pieceButton")[i].style.backgroundSize = "45px 45px"
+                document.getElementsByClassName("pieceButton")[i].style.borderRadius = "15px"
+                }
+            }
         }
     }
-    var mediaWidth = window.matchMedia("(max-width: 1100px)")
-    var mediaHeight = window.matchMedia("(max-height: 870px)")
-    mediaWidthFoo(mediaWidth)
-    mediaHeightFoo(mediaHeight)
-    mediaWidth.addListener(mediaWidthFoo)
-    mediaHeight.addListener(mediaHeightFoo)
+
 
     //Make buttons on each liberty on the board and assign it an id to keep track of
     //Also assign event listeners and attributes for onmouseover effect
@@ -65,8 +143,6 @@ const startGame = () => {
             newDiv.setAttribute("id",`pieceButtonDivi${i}j${j}`)
             document.getElementById("myDiv").appendChild(newDiv);
             newDiv.style.position = "absolute"
-            newDiv.style.height = "45px"
-            newDiv.style.width = "45px"
             newDiv.style.marginLeft = "0px"
             newDiv.style.marginRight = "0px"
             newDiv.style.marginTop = "0px"
@@ -95,26 +171,42 @@ const startGame = () => {
             newButton.style.marginBottom = "0px"
             newButton.style.textAlign = "center"
             newButton.style.verticalAlign = "center"
-            newButton.style.top = "25%"
-            newButton.style.left = "25%"
             newButton.setAttribute("onmouseover","hoverThis(this)")
             newButton.setAttribute("onmouseout","dontHoverThis(this)")
             newButton.setAttribute("onclick","game.place(this)")
         }
     }
+
+    var mediaWidth = window.matchMedia("(max-width: 1100px)")
+    var mediaHeight = window.matchMedia("(max-height: 870px)")
+    mediaWidthFoo(mediaWidth)
+    mediaHeightFoo(mediaHeight)
+    mediaWidth.addListener(mediaWidthFoo)
+    mediaHeight.addListener(mediaHeightFoo)
+
 } //End of the startGame function
 
 //functions used in the startGame function 
 //when mouse enters button
 function hoverThis(obj) {
-    document.getElementById(obj.id).style.background = "#A0A0A0"
-    document.getElementById(obj.id).style.border = "2px solid black"
+    if (document.getElementById("myDiv").clientWidth === 750) {
+
     document.getElementById(obj.id).style.width = "15px"
     document.getElementById(obj.id).style.height = "15px"
-    document.getElementById(obj.id).style.backgroundSize = "10px 10px"
-    document.getElementById(obj.id).style.backgroundPosition = "center center"
     document.getElementById(obj.id).style.top = "25%"
     document.getElementById(obj.id).style.left = "25%"
+    } else {
+    document.getElementById(obj.id).style.width = "10px"
+    document.getElementById(obj.id).style.height = "15px"
+    document.getElementById(obj.id).style.top = "10%"
+    document.getElementById(obj.id).style.left = "10%"
+    }
+
+    document.getElementById(obj.id).style.background = "#A0A0A0"
+    document.getElementById(obj.id).style.border = "2px solid black"
+    document.getElementById(obj.id).style.backgroundSize = "10px 10px"
+    document.getElementById(obj.id).style.backgroundPosition = "center center"
+
 }
 
 //when mouse leaves button
@@ -135,6 +227,7 @@ const game = {
 
     //Function to run every time a piece is placed
     place: function(obj) {
+
         //Add 1 to the move count
         this.moveCounter += 1
 
@@ -145,20 +238,35 @@ const game = {
             document.getElementById(obj.id).style.backgroundImage = 'url(images/blackPiece.png)'
         }
 
-        //Styling applied to every button clicked
-        document.getElementById(obj.id).style.backgroundColor = 'white'
-        document.getElementById(obj.id).style.backgroundSize = "45px 45px"
-        document.getElementById(obj.id).style.border = "1px solid black"
-        document.getElementById(obj.id).style.borderRadius = "15px"
-        document.getElementById(obj.id).style.width = "30px"
-        document.getElementById(obj.id).style.height = "30px"
-        document.getElementById(obj.id).style.left = "10%"
-        document.getElementById(obj.id).style.top = "10%"
+        if (document.getElementById("myDiv").clientWidth === 750) {
+
+            //Styling applied to every button clicked if the board is 750 pixels across
+            document.getElementById(obj.id).style.backgroundSize = "45px 45px"
+            document.getElementById(obj.id).style.borderRadius = "15px"
+            document.getElementById(obj.id).style.width = "30px"
+            document.getElementById(obj.id).style.height = "30px"
+            document.getElementById(obj.id).style.backgroundPosition = "center center"
+            document.getElementById(obj.id).style.top = "10%"
+            document.getElementById(obj.id).style.left = "10%"
+        } else {
+
+            //Styling applied if go board is not 750 pixels across
+            document.getElementById(obj.id).style.backgroundSize = "15px 15px"
+            document.getElementById(obj.id).style.borderRadius = "7px"
+            document.getElementById(obj.id).style.width = "15px"
+            document.getElementById(obj.id).style.height = "15px"
+        }
+
+        //Styling applied to every button no matter size
         document.getElementById(obj.id).style.backgroundPosition = "center center"
+        document.getElementById(obj.id).style.border = "1px solid black"
+        
+        //Remove attributes so that the buttons stays on screen and becomes inactive
         document.getElementById(obj.id).setAttribute("onmouseout","");
         document.getElementById(obj.id).setAttribute("onmouseover","");
         document.getElementById(obj.id).setAttribute("onclick","");
         console.log(this.moveCounter)
+        console.log(document.getElementById("myDiv").clientWidth)
     }
 
 }
