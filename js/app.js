@@ -20,7 +20,7 @@ const startGame = () => {
     newDiv.style.height = "750px"
     newDiv.style.marginRight = "10px"
     newDiv.style.marginLeft = "10px"
-    newDiv.style.right = "30%"
+    newDiv.style.right = "35%"
     newDiv.style.backgroundImage = "url(images/goBoard.png)"
     newDiv.style.backgroundSize = "contain"
 
@@ -32,6 +32,7 @@ const startGame = () => {
             document.getElementById("myDiv").style.width = "350px"
             document.getElementById("myDiv").style.height = "350px"
             document.getElementById("myDiv").style.marginTop = "150px"
+            document.getElementById("myDiv").style.right = "25%"
             
             //change width and height of all piece button divs
             for (let i = 0; i < 19; i++) {
@@ -58,6 +59,7 @@ const startGame = () => {
             document.getElementById("myDiv").style.height = "750px"
             document.getElementById("myDiv").style.top = "100px"
             document.getElementById("myDiv").style.marginTop = "0px"
+            document.getElementById("myDiv").style.right = "35%"
 
             for (let i = 0; i < 19; i++) {
                 for (let j = 0; j< 19; j++) {
@@ -177,7 +179,7 @@ const startGame = () => {
         }
     }
 
-    var mediaWidth = window.matchMedia("(max-width: 1100px)")
+    var mediaWidth = window.matchMedia("(max-width: 1170px)")
     var mediaHeight = window.matchMedia("(max-height: 870px)")
     mediaWidthFoo(mediaWidth)
     mediaHeightFoo(mediaHeight)
@@ -228,6 +230,11 @@ const game = {
     //Function to run every time a piece is placed
     place: function(obj) {
 
+        //Change the last button pressed to a black border
+        if (this.moveCounter > 0) {
+        document.getElementById(buttonId).style.border = "1px solid black"
+        }
+        
         //Add 1 to the move count
         this.moveCounter += 1
 
@@ -259,14 +266,16 @@ const game = {
 
         //Styling applied to every button no matter size
         document.getElementById(obj.id).style.backgroundPosition = "center center"
-        document.getElementById(obj.id).style.border = "1px solid black"
+        document.getElementById(obj.id).style.border = "4px solid green"
         
         //Remove attributes so that the buttons stays on screen and becomes inactive
         document.getElementById(obj.id).setAttribute("onmouseout","");
         document.getElementById(obj.id).setAttribute("onmouseover","");
         document.getElementById(obj.id).setAttribute("onclick","");
-        console.log(this.moveCounter)
-        console.log(document.getElementById("myDiv").clientWidth)
+        
+        //Save the id of the clicked button so that the green border can be changed to black
+        buttonId = obj.id;
+        return buttonId
     }
 
 }
