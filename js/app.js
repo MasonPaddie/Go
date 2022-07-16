@@ -99,7 +99,7 @@ const startGame = () => {
             newButton.style.left = "25%"
             newButton.setAttribute("onmouseover","hoverThis(this)")
             newButton.setAttribute("onmouseout","dontHoverThis(this)")
-            newButton.addEventListener("click",function() {game.place(this);})
+            newButton.setAttribute("onclick","game.place(this)")
         }
     }
 } //End of the startGame function
@@ -130,8 +130,10 @@ const howToLink = () => {
 
 //game object
 const game = {
+    //Will keep track of what move it is
     moveCounter: 0,
 
+    //Function to run every time a piece is placed
     place: function(obj) {
         //Add 1 to the move count
         this.moveCounter += 1
@@ -143,6 +145,7 @@ const game = {
             document.getElementById(obj.id).style.backgroundImage = 'url(images/blackPiece.png)'
         }
 
+        //Styling applied to every button clicked
         document.getElementById(obj.id).style.backgroundColor = 'white'
         document.getElementById(obj.id).style.backgroundSize = "45px 45px"
         document.getElementById(obj.id).style.border = "1px solid black"
@@ -154,6 +157,8 @@ const game = {
         document.getElementById(obj.id).style.backgroundPosition = "center center"
         document.getElementById(obj.id).setAttribute("onmouseout","");
         document.getElementById(obj.id).setAttribute("onmouseover","");
+        document.getElementById(obj.id).setAttribute("onclick","");
+        console.log(this.moveCounter)
     }
 
 }
