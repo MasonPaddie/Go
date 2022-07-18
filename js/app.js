@@ -236,11 +236,24 @@ const howToLink = () => {
 
 //game object
 const game = {
+
     //Will keep track of what move it is
     moveCounter: 0,
 
+    //Saves the postion of the active moves. Jagged array of coordinates
+    activeMoves: [],
+
+    //Saves the position of every move that occurs in order. Jagged array of coordinates
+    savedMoves: [],
+
+    //Saves the enemy grouped pieces for every move. Resets every time pieces is placed. Jagged array of coordinates
+    group: [],
+
     //Function to run every time a piece is placed
     place: function(obj) {
+
+        //Reset the group
+        this.group = [];
 
         //Change the last button pressed to a black border
         if (this.moveCounter > 0) {
@@ -285,9 +298,327 @@ const game = {
         document.getElementById(obj.id).setAttribute("onmouseover","");
         document.getElementById(obj.id).setAttribute("onclick","");
         
+        //Get the i and j coordinates of the clicked button by using the location of the parent div
+        iPos = Math.round((parseFloat(((document.getElementById(document.getElementById(obj.id).parentElement.id).style.left)))-0.55)/5.2)
+        jPos = Math.round((parseFloat(((document.getElementById(document.getElementById(obj.id).parentElement.id).style.top)))-0.55)/5.2)
+        
+        this.activeMoves.push([iPos,jPos])
+        this.savedMoves.push([iPos,jPos])
+
+        //function that checks for capture
+        this.checkCapture(iPos,jPos,this.moveCounter)
+
         //Save the id of the clicked button so that the green border can be changed to black
         buttonId = obj.id;
         return buttonId
-    }
+    },
 
-}
+    //function to get the color of a piece at a specific position
+    checkColor: function(posI,posJ) {
+        for (let i = 0; i < this.savedMoves.length; i++) {
+            if (this.savedMoves[i].includes(posI)) {
+                if (this.savedMoves[i].includes(posJ)) {
+                    const moveCount = i + 1;
+                    const color = (moveCount % 2 === 0);
+                    return color
+                }
+            }
+        }
+    },
+
+    //function to group together pieces moving up from a position 
+    groupUp: function (posI,posJ) {
+
+        //index values used for index
+        let i = 0
+
+        //get current color and the color of the next piece up
+        let thisColorUp = this.checkColor(posI,posJ)
+        let nextColorUp = this.checkColor(posI,posJ - i)
+
+        //Move up while the colors are the same
+        while (nextColorUp === thisColorUp) {
+        
+            //Determines if value exists in jagged array
+            let includes = false; 
+            for (let j = 0; j < this.group.length; j++) {
+                if (this.group[j].includes(posI)) {
+                    if (this.group[j].includes(posJ - i)) {
+                        includes = true;
+                    }
+                }
+            }
+            
+            //push the current piece to the group array as long as it is not already in it
+            if (includes === false) {
+            this.group.push([posI,posJ + i])
+        
+            //Checks if the piece to the left is the same color
+            if (this.checkColor(posI - 1, posJ - i) === thisColorUp) {
+
+                //if it is the same color, start grouping left on this piece
+                this.groupLeft(posI - 1, posJ - i)
+            }
+
+            //Checks if the piece right is the same color
+            if (this.checkColor(posI + 1, posJ - i) === thisColorUp) {
+
+                //if it is the same color, start grouping right on this piece
+                this.groupRight(posI + 1, posJ - i)
+            }
+        }
+            //Add 1 to index value
+            i += 1
+
+            //Get the color of the next piece up
+            nextColorUp = this.checkColor(posI,posJ - i)
+        }
+    },
+    //function to group together pieces moving down from a position 
+    groupDown: function (posI,posJ) {
+
+        //index values used for index
+        let i = 0
+
+        //get current color and the color of the next piece up
+        let thisColorDown = this.checkColor(posI,posJ)
+        let nextColorDown = this.checkColor(posI,posJ + i)
+
+        //Move down while the colors are the same
+        while (nextColorDown === thisColorDown) {
+        
+            //Determines if value exists in jagged array
+            let includes = false; 
+            for (let j = 0; j < this.group.length; j++) {
+                if (this.group[j].includes(posI)) {
+                    if (this.group[j].includes(posJ + i)) {
+                        includes = true;
+                    }
+                }
+            }
+            
+           //push the current piece to the group array as long as it is not already in it
+           if (includes === false) {
+            this.group.push([posI,posJ + i])
+        
+            //Checks if the piece to the left is the same color
+            if (this.checkColor(posI - 1, posJ + i) === thisColorDown) {
+
+                //if it is the same color, start grouping left on this piece
+                this.groupLeft(posI - 1, posJ + i)
+            }
+
+            //Checks if the piece right is the same color
+            if (this.checkColor(posI + 1, posJ + i) === thisColorDown) {
+
+                //if it is the same color, start grouping right on this piece
+                this.groupRight(posI + 1, posJ + i)
+            }
+        }
+
+            //Add 1 to index value
+            i += 1
+
+            //Get the color of the next piece down
+            nextColorDown = this.checkColor(posI,posJ + i)
+        }
+    },
+
+    //function to group together pieces moving left from a position 
+    groupLeft: function (posI,posJ) {
+
+        //index values used for index
+        let i = 0
+
+        //get current color and the color of the next piece up
+        let thisColorLeft = this.checkColor(posI,posJ)
+        let nextColorLeft = this.checkColor(posI - i,posJ)
+
+        //Move left while the colors are the same
+        while (nextColorLeft === thisColorLeft) {
+        
+            //Determines if value exists in jagged array
+            let includes = false; 
+            for (let j = 0; j < this.group.length; j++) {
+                if (this.group[j].includes(posI - i)) {
+                    if (this.group[j].includes(posJ)) {
+                        includes = true;
+                    }
+                }
+            }
+            
+            //push the current piece to the group array as long as it is not already in it
+            if (includes === false) {
+                this.group.push([posI - i,posJ])
+            
+                //Checks if the piece up is the same color
+                if (this.checkColor(posI - i, posJ - 1) === thisColorLeft) {
+
+                    //if it is the same color, start grouping up on this piece
+                    this.groupUp(posI - i, posJ - 1)
+                }
+
+                //Checks if the piece down is the same color
+                if (this.checkColor(posI - i, posJ + 1) === thisColorLeft) {
+
+                    //if it is the same color, start grouping down on this piece
+                    this.groupDown(posI - i, posJ + 1)
+                }
+            }
+
+            //Add 1 to index value
+            i += 1
+
+            //Get the color of the next piece left
+            nextColorLeft = this.checkColor(posI - i,posJ)
+        }
+    },
+
+    //function to group together pieces moving right from a position 
+    groupRight: function (posI,posJ) {
+
+        //index values used for index
+        let i = 0
+
+        //get current color and the color of the next piece up
+        let thisColorRight = this.checkColor(posI,posJ)
+        let nextColorRight = this.checkColor(posI + i,posJ)
+
+        //Move Right while the colors are the same
+        while (nextColorRight === thisColorRight) {
+        
+            //Determines if value exists in jagged array
+            let includes = false; 
+            for (let j = 0; j < this.group.length; j++) {
+                if (this.group[j].includes(posI + i)) {
+                    if (this.group[j].includes(posJ)) {
+                        includes = true;
+                    }
+                }
+            }
+            
+            //push the current piece to the group array as long as it is not already in it
+            if (includes === false) {
+                this.group.push([posI + i,posJ])
+            
+
+                //Checks if the piece up is the same color
+                if (this.checkColor(posI + i, posJ - 1) === thisColorRight) {
+
+                    //if it is the same color, start grouping up on this piece
+                    this.groupUp(posI + i, posJ - 1)
+                }
+
+                //Checks if the piece down is the same color
+                if (this.checkColor(posI + i, posJ + 1) === thisColorRight) {
+
+                    //if it is the same color, start grouping down on this piece
+                    this.groupDown(posI + i, posJ + 1)
+                }
+            }
+
+            //Add 1 to index value
+            i += 1
+
+            //Get the color of the next piece Right
+            nextColorRight = this.checkColor(posI + i,posJ)
+        }
+    },
+
+    //function that checks adjacent pieces for capture on every place
+    checkCapture: function(posI,posJ,moveCount) {
+        
+       //first checks all adjacent pieces to see if any are opposite color. 
+       //if any adjacent pieces are the opposite color, push this position to group array as well as any adjacent pieces of same color
+       //checks color using moveCounter
+
+       //The color of the recently played piece
+       currentColor = (moveCount % 2 === 0);
+
+       //Only check adjacent pieces up if there is space to move up
+        if (posJ != 0) {
+            
+            //Array for the location of the adjacent piece in the up direction
+            adjacentUp = [posI, posJ - 1]
+            
+            //Loop across the jagged array of active moves and see if the adjacent piece has been played
+            for (let i = 0; i < this.activeMoves.length; i++) {
+                if (this.activeMoves[i].includes(adjacentUp[0])) {
+                    if (this.activeMoves[i].includes(adjacentUp[1])) {
+
+                        //If the piece has been played, check the color of this piece and start grouping if it is opposite the played piece. 
+                        color = this.checkColor(adjacentUp[0],adjacentUp[1])
+                        if (color != currentColor) {
+                           this.groupUp(adjacentUp[0],adjacentUp[1])
+                        }
+                    }
+                } 
+            }
+        } 
+
+        //Only check adjacent pieces down if there is space to move down
+        if (posJ != 18) {
+            
+            //Array for the location of the adjacent piece in the down direction
+            adjacentDown = [posI, posJ + 1]
+            
+            //Loop across the jagged array of active moves and see if the adjacent piece has been played
+            for (let i = 0; i < this.activeMoves.length; i++) {
+                if (this.activeMoves[i].includes(adjacentDown[0])) {
+                    if (this.activeMoves[i].includes(adjacentDown[1])) {
+
+                        //If the piece has been played, check the color of this piece and start group if it is opposite the played piece. 
+                        color = this.checkColor(adjacentDown[0],adjacentDown[1])
+                        if (color != currentColor) {
+                           this.groupDown(adjacentDown[0],adjacentDown[1])
+                        }
+                    }
+                } 
+            }
+        } 
+        
+        //Only check adjacent pieces left if there is space to move left
+        if (posI != 0) {
+            
+            //Array for the location of the adjacent piece in the left direction
+            adjacentLeft = [posI - 1, posJ]
+            
+            //Loop across the jagged array of active moves and see if the adjacent piece has been played
+            for (let i = 0; i < this.activeMoves.length; i++) {
+                if (this.activeMoves[i].includes(adjacentLeft[0])) {
+                    if (this.activeMoves[i].includes(adjacentLeft[1])) {
+
+                        //If the piece has been played, check the color of this piece and start group if it is opposite the played piece. 
+                        color = this.checkColor(adjacentLeft[0],adjacentLeft[1])
+                        if (color != currentColor) {
+                           this.groupLeft(adjacentLeft[0],adjacentLeft[1])
+                        }
+                    }
+                } 
+            }
+        } 
+
+          //Only check adjacent pieces right if there is space to move right
+          if (posI != 18) {
+            
+            //Array for the location of the adjacent piece in the right direction
+            adjacentRight = [posI + 1, posJ]
+            
+            //Loop across the jagged array of active moves and see if the adjacent piece has been played
+            for (let i = 0; i < this.activeMoves.length; i++) {
+                if (this.activeMoves[i].includes(adjacentRight[0])) {
+                    if (this.activeMoves[i].includes(adjacentRight[1])) {
+
+                        //If the piece has been played, check the color of this piece and start group if it is opposite the played piece. 
+                        color = this.checkColor(adjacentRight[0],adjacentRight[1])
+                        if (color != currentColor) {
+                           this.groupRight(adjacentRight[0],adjacentRight[1])
+                        }
+                    }
+                } 
+            }
+        } 
+        console.log(this.group)
+    } //End of checkCapture function
+
+}// End of game object
