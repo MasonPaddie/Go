@@ -550,6 +550,7 @@ const game = {
                         color = this.checkColor(adjacentUp[0],adjacentUp[1])
                         if (color != currentColor) {
                            this.groupUp(adjacentUp[0],adjacentUp[1])
+                           this.group.push([adjacentUp[0],adjacentUp[1]])
                         }
                     }
                 } 
@@ -571,6 +572,7 @@ const game = {
                         color = this.checkColor(adjacentDown[0],adjacentDown[1])
                         if (color != currentColor) {
                            this.groupDown(adjacentDown[0],adjacentDown[1])
+                           this.group.push([adjacentDown[0],adjacentDown[1]])
                         }
                     }
                 } 
@@ -592,6 +594,7 @@ const game = {
                         color = this.checkColor(adjacentLeft[0],adjacentLeft[1])
                         if (color != currentColor) {
                            this.groupLeft(adjacentLeft[0],adjacentLeft[1])
+                           this.group.push([adjacentleft[0],adjacentleft[1]])
                         }
                     }
                 } 
@@ -613,6 +616,7 @@ const game = {
                         color = this.checkColor(adjacentRight[0],adjacentRight[1])
                         if (color != currentColor) {
                            this.groupRight(adjacentRight[0],adjacentRight[1])
+                           this.group.push([adjacentRight[0],adjacentRight[1]])
                         }
                     }
                 } 
