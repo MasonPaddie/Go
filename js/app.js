@@ -313,11 +313,24 @@ const game = {
         return buttonId
     },
 
+    //function to test if a coordinate array is in a jagged array
+    jaggedIncludes: function(posI, posJ, jaggedArr) {
+        let includes = false; 
+        for (let i = 0; i < jaggedArr.length; i++) {
+            if (jaggedArr[i][0] === (posI)) {
+                if (jaggedArr[i][1] === (posJ)) {
+                    includes = true;
+                }
+            }
+        }
+        return includes
+    },
+
     //function to get the color of a piece at a specific position
     checkColor: function(posI,posJ) {
         for (let i = 0; i < this.savedMoves.length; i++) {
-            if (this.savedMoves[i].includes(posI)) {
-                if (this.savedMoves[i].includes(posJ)) {
+            if (this.savedMoves[i][0] === (posI)) {
+                if (this.savedMoves[i][1] === (posJ)) {
                     const moveCount = i + 1;
                     const color = (moveCount % 2 === 0);
                     return color
@@ -340,33 +353,27 @@ const game = {
         while (nextColorUp === thisColorUp) {
         
             //Determines if value exists in jagged array
-            let includes = false; 
-            for (let j = 0; j < this.group.length; j++) {
-                if (this.group[j].includes(posI)) {
-                    if (this.group[j].includes(posJ - i)) {
-                        includes = true;
-                    }
-                }
-            }
-            
+            let includes = this.jaggedIncludes(posI,posJ - i,this.group);
+
             //push the current piece to the group array as long as it is not already in it
             if (includes === false) {
-            this.group.push([posI,posJ + i])
-        
+                this.group.push([posI,posJ - i])
+            }
+            
             //Checks if the piece to the left is the same color
             if (this.checkColor(posI - 1, posJ - i) === thisColorUp) {
-
+                console.log("left")
                 //if it is the same color, start grouping left on this piece
                 this.groupLeft(posI - 1, posJ - i)
             }
 
             //Checks if the piece right is the same color
             if (this.checkColor(posI + 1, posJ - i) === thisColorUp) {
-
                 //if it is the same color, start grouping right on this piece
                 this.groupRight(posI + 1, posJ - i)
             }
-        }
+            
+
             //Add 1 to index value
             i += 1
 
@@ -388,19 +395,13 @@ const game = {
         while (nextColorDown === thisColorDown) {
         
             //Determines if value exists in jagged array
-            let includes = false; 
-            for (let j = 0; j < this.group.length; j++) {
-                if (this.group[j].includes(posI)) {
-                    if (this.group[j].includes(posJ + i)) {
-                        includes = true;
-                    }
-                }
-            }
+            let includes = this.jaggedIncludes(posI,posJ + i,this.group);
             
-           //push the current piece to the group array as long as it is not already in it
-           if (includes === false) {
+            //push the current piece to the group array as long as it is not already in it
+            if (includes === false) {
             this.group.push([posI,posJ + i])
-        
+            }
+
             //Checks if the piece to the left is the same color
             if (this.checkColor(posI - 1, posJ + i) === thisColorDown) {
 
@@ -414,7 +415,6 @@ const game = {
                 //if it is the same color, start grouping right on this piece
                 this.groupRight(posI + 1, posJ + i)
             }
-        }
 
             //Add 1 to index value
             i += 1
@@ -438,32 +438,25 @@ const game = {
         while (nextColorLeft === thisColorLeft) {
         
             //Determines if value exists in jagged array
-            let includes = false; 
-            for (let j = 0; j < this.group.length; j++) {
-                if (this.group[j].includes(posI - i)) {
-                    if (this.group[j].includes(posJ)) {
-                        includes = true;
-                    }
-                }
-            }
-            
+            let includes = this.jaggedIncludes(posI - i,posJ,this.group);
+
             //push the current piece to the group array as long as it is not already in it
             if (includes === false) {
                 this.group.push([posI - i,posJ])
+            }
             
-                //Checks if the piece up is the same color
-                if (this.checkColor(posI - i, posJ - 1) === thisColorLeft) {
+            //Checks if the piece up is the same color
+            if (this.checkColor(posI - i, posJ - 1) === thisColorLeft) {
 
-                    //if it is the same color, start grouping up on this piece
-                    this.groupUp(posI - i, posJ - 1)
-                }
+                //if it is the same color, start grouping up on this piece
+                this.groupUp(posI - i, posJ - 1)
+            }
 
-                //Checks if the piece down is the same color
-                if (this.checkColor(posI - i, posJ + 1) === thisColorLeft) {
+            //Checks if the piece down is the same color
+            if (this.checkColor(posI - i, posJ + 1) === thisColorLeft) {
 
-                    //if it is the same color, start grouping down on this piece
-                    this.groupDown(posI - i, posJ + 1)
-                }
+                //if it is the same color, start grouping down on this piece
+                this.groupDown(posI - i, posJ + 1)
             }
 
             //Add 1 to index value
@@ -487,34 +480,26 @@ const game = {
         //Move Right while the colors are the same
         while (nextColorRight === thisColorRight) {
         
-            //Determines if value exists in jagged array
-            let includes = false; 
-            for (let j = 0; j < this.group.length; j++) {
-                if (this.group[j].includes(posI + i)) {
-                    if (this.group[j].includes(posJ)) {
-                        includes = true;
-                    }
-                }
-            }
-            
+            //Determines if value exists in jagged array          
+            let includes = this.jaggedIncludes(posI + i,posJ,this.group);
+
             //push the current piece to the group array as long as it is not already in it
             if (includes === false) {
                 this.group.push([posI + i,posJ])
-            
+            }
 
-                //Checks if the piece up is the same color
-                if (this.checkColor(posI + i, posJ - 1) === thisColorRight) {
+            //Checks if the piece up is the same color
+            if (this.checkColor(posI + i, posJ - 1) === thisColorRight) {
 
-                    //if it is the same color, start grouping up on this piece
-                    this.groupUp(posI + i, posJ - 1)
-                }
+                //if it is the same color, start grouping up on this piece
+                this.groupUp(posI + i, posJ - 1)
+            }
 
-                //Checks if the piece down is the same color
-                if (this.checkColor(posI + i, posJ + 1) === thisColorRight) {
+            //Checks if the piece down is the same color
+            if (this.checkColor(posI + i, posJ + 1) === thisColorRight) {
 
-                    //if it is the same color, start grouping down on this piece
-                    this.groupDown(posI + i, posJ + 1)
-                }
+                //if it is the same color, start grouping down on this piece
+                this.groupDown(posI + i, posJ + 1)
             }
 
             //Add 1 to index value
@@ -543,14 +528,19 @@ const game = {
             
             //Loop across the jagged array of active moves and see if the adjacent piece has been played
             for (let i = 0; i < this.activeMoves.length; i++) {
-                if (this.activeMoves[i].includes(adjacentUp[0])) {
-                    if (this.activeMoves[i].includes(adjacentUp[1])) {
+                if (this.activeMoves[i][0] === (adjacentUp[0])) {
+                    if (this.activeMoves[i][1] === (adjacentUp[1])) {
 
                         //If the piece has been played, check the color of this piece and start grouping if it is opposite the played piece. 
                         color = this.checkColor(adjacentUp[0],adjacentUp[1])
                         if (color != currentColor) {
-                           this.groupUp(adjacentUp[0],adjacentUp[1])
-                           this.group.push([adjacentUp[0],adjacentUp[1]])
+                            let includes = this.jaggedIncludes(adjacentUp[0],adjacentUp[1],this.group);
+
+                            if (includes === false) {
+                                this.group.push([adjacentUp[0],adjacentUp[1]]) 
+                            }
+
+                            this.groupUp(adjacentUp[0],adjacentUp[1])
                         }
                     }
                 } 
@@ -565,14 +555,19 @@ const game = {
             
             //Loop across the jagged array of active moves and see if the adjacent piece has been played
             for (let i = 0; i < this.activeMoves.length; i++) {
-                if (this.activeMoves[i].includes(adjacentDown[0])) {
-                    if (this.activeMoves[i].includes(adjacentDown[1])) {
+                if (this.activeMoves[i][0] === (adjacentDown[0])) {
+                    if (this.activeMoves[i][1] === (adjacentDown[1])) {
 
                         //If the piece has been played, check the color of this piece and start group if it is opposite the played piece. 
                         color = this.checkColor(adjacentDown[0],adjacentDown[1])
                         if (color != currentColor) {
-                           this.groupDown(adjacentDown[0],adjacentDown[1])
-                           this.group.push([adjacentDown[0],adjacentDown[1]])
+                            let includes = this.jaggedIncludes(adjacentDown[0],adjacentDown[1],this.group);
+                            
+                            if (includes === false) {
+                                this.group.push([adjacentDown[0],adjacentDown[1]]) 
+                            }
+
+                            this.groupDown(adjacentDown[0],adjacentDown[1])
                         }
                     }
                 } 
@@ -587,36 +582,45 @@ const game = {
             
             //Loop across the jagged array of active moves and see if the adjacent piece has been played
             for (let i = 0; i < this.activeMoves.length; i++) {
-                if (this.activeMoves[i].includes(adjacentLeft[0])) {
-                    if (this.activeMoves[i].includes(adjacentLeft[1])) {
+                if (this.activeMoves[i][0] === (adjacentLeft[0])) {
+                    if (this.activeMoves[i][1] === (adjacentLeft[1])) {
 
                         //If the piece has been played, check the color of this piece and start group if it is opposite the played piece. 
                         color = this.checkColor(adjacentLeft[0],adjacentLeft[1])
                         if (color != currentColor) {
-                           this.groupLeft(adjacentLeft[0],adjacentLeft[1])
-                           this.group.push([adjacentleft[0],adjacentleft[1]])
+                            let includes = this.jaggedIncludes(adjacentLeft[0],adjacentLeft[1],this.group);
+                            
+                            if (includes === false) {
+                                this.group.push([adjacentLeft[0],adjacentLeft[1]]) 
+                            }
+
+                            this.groupLeft(adjacentLeft[0],adjacentLeft[1])
                         }
                     }
                 } 
             }
         } 
 
-          //Only check adjacent pieces right if there is space to move right
-          if (posI != 18) {
+        //Only check adjacent pieces right if there is space to move right
+        if (posI != 18) {
             
             //Array for the location of the adjacent piece in the right direction
             adjacentRight = [posI + 1, posJ]
             
             //Loop across the jagged array of active moves and see if the adjacent piece has been played
             for (let i = 0; i < this.activeMoves.length; i++) {
-                if (this.activeMoves[i].includes(adjacentRight[0])) {
-                    if (this.activeMoves[i].includes(adjacentRight[1])) {
+                if (this.activeMoves[i][0] === (adjacentRight[0])) {
+                    if (this.activeMoves[i][1] === (adjacentRight[1])) {
 
                         //If the piece has been played, check the color of this piece and start group if it is opposite the played piece. 
                         color = this.checkColor(adjacentRight[0],adjacentRight[1])
                         if (color != currentColor) {
-                           this.groupRight(adjacentRight[0],adjacentRight[1])
-                           this.group.push([adjacentRight[0],adjacentRight[1]])
+                            let includes = this.jaggedIncludes(adjacentRight[0],adjacentRight[1],this.group);
+                            
+                            if (includes === false) {
+                                this.group.push([adjacentRight[0],adjacentRight[1]]) 
+                            }
+                            this.groupRight(adjacentRight[0],adjacentRight[1])
                         }
                     }
                 } 
