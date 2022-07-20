@@ -25,7 +25,6 @@ const startGame = () => {
     newDiv.style.backgroundSize = "contain"
 
     //Set board size based on current screen size
-    console.log(window.innerWidth > 1170) 
     if (window.innerWidth > 1170) {
         if (window.innerHeight > 870) {
             // newDiv.style.width = "750px"
@@ -171,8 +170,8 @@ const startGame = () => {
             newButton.setAttribute("class","pieceButton")
             newButton.setAttribute("id",`i${i}j${j}`)
             document.getElementById(`pieceButtonDivi${i}j${j}`).appendChild(newButton);
+
             newButton.style.position = "absolute"
-            
             newButton.style.width = "25px"
             newButton.style.height = "25px"
             newButton.style.backgroundPosition = "center center"
@@ -191,6 +190,12 @@ const startGame = () => {
         }
     }
 
+    //Call the makeCoors function to make the liberties on the board
+    game.makeCoors();
+
+    //Using media queries in JS is something I did not really understand, and my annotation on it probably reflects that.
+    //This link from W3 schools was the template I used to build upon for the media queries.
+    //https://www.w3schools.com/howto/howto_js_media_queries.asp
     var mediaWidth = window.matchMedia("(max-width: 1170px)")
     var mediaHeight = window.matchMedia("(max-height: 870px)")
     mediaWidthFoo(mediaWidth)
@@ -198,7 +203,8 @@ const startGame = () => {
     mediaWidth.addListener(mediaWidthFoo)
     mediaHeight.addListener(mediaHeightFoo)
 
-} //End of the startGame function
+
+} 
 
 //functions used in the startGame function 
 //when mouse enters button
@@ -240,20 +246,44 @@ const game = {
     //Will keep track of what move it is
     moveCounter: 0,
 
-    //Saves the postion of the active moves. Jagged array of coordinates
+    //Saves the postion of the active moves. Multi-dimensional array of coordinates
     activeMoves: [],
 
-    //Saves the position of every move that occurs in order. Jagged array of coordinates
+    //Saves the position of every move that occurs in order. Multi-dimensional array of coordinates
     savedMoves: [],
 
-    //Saves the enemy grouped pieces for every move. Resets every time pieces is placed. Jagged array of coordinates
+    //Saves the enemy grouped pieces. Multi-dimensional array of coordinates
     group: [],
+    
+    //Keeps track of the active liberties on the board. Initally, every intersection is a liberty.
+    //Is empty right now but filled upon startGame
+    liberties: [],
+
+    //function to make the coordinate array. Called once on startGame.
+    makeCoors: function() {
+        for (let i = 0;i < 19; i++) {
+            for (let j = 0;j < 19; j++) {
+                this.liberties.push([i,j])
+            }
+        }
+    },
 
     //Function to run every time a piece is placed
     place: function(obj) {
 
         //Reset the group
         this.group = [];
+
+        //Get the i and j coordinates of the clicked button by using the location of the parent div
+        iPos = Math.round((parseFloat(((document.getElementById(document.getElementById(obj.id).parentElement.id).style.left)))-0.55)/5.2)
+        jPos = Math.round((parseFloat(((document.getElementById(document.getElementById(obj.id).parentElement.id).style.top)))-0.55)/5.2)
+        
+        //Push these moves to activeMoves and savedMoves
+        this.activeMoves.push([iPos,jPos])
+        this.savedMoves.push([iPos,jPos])
+
+        //function that removes this position from liberties array
+        this.multDimRemove(iPos,jPos,this.liberties)
 
         //Change the last button pressed to a black border
         if (this.moveCounter > 0) {
@@ -297,33 +327,46 @@ const game = {
         document.getElementById(obj.id).setAttribute("onmouseout","");
         document.getElementById(obj.id).setAttribute("onmouseover","");
         document.getElementById(obj.id).setAttribute("onclick","");
-        
-        //Get the i and j coordinates of the clicked button by using the location of the parent div
-        iPos = Math.round((parseFloat(((document.getElementById(document.getElementById(obj.id).parentElement.id).style.left)))-0.55)/5.2)
-        jPos = Math.round((parseFloat(((document.getElementById(document.getElementById(obj.id).parentElement.id).style.top)))-0.55)/5.2)
-        
-        this.activeMoves.push([iPos,jPos])
-        this.savedMoves.push([iPos,jPos])
 
         //function that checks for capture
-        this.checkCapture(iPos,jPos,this.moveCounter)
+        this.checkCapture(iPos,jPos)
 
         //Save the id of the clicked button so that the green border can be changed to black
         buttonId = obj.id;
         return buttonId
     },
 
-    //function to test if a coordinate array is in a jagged array
-    jaggedIncludes: function(posI, posJ, jaggedArr) {
+    //function to test if a coordinate array is in a multidimensional coordinate array
+    multDimIncludes: function(posI, posJ, multDimArr) {
         let includes = false; 
-        for (let i = 0; i < jaggedArr.length; i++) {
-            if (jaggedArr[i][0] === (posI)) {
-                if (jaggedArr[i][1] === (posJ)) {
+        for (let i = 0; i < multDimArr.length; i++) {
+            if (multDimArr[i][0] === (posI)) {
+                if (multDimArr[i][1] === (posJ)) {
                     includes = true;
                 }
             }
         }
         return includes
+    },
+
+    //function to get the last index of a coordinate array in a multidimensional coordinate array
+    multDimIndex: function(posI,posJ, multDimArr) {
+        let index = 0;
+        for (let i = 0; i < multDimArr.length; i++) {
+            if (multDimArr[i][0] === (posI)) {
+                if (multDimArr[i][1] === (posJ)) {
+                    index = i;
+                }
+            }
+        }
+        return index
+    },
+
+    //function to remove coordinates from multidimensional coordinate array
+    multDimRemove: function (posI, posJ, multDimArr) {
+        if (this.multDimIncludes(posI,posJ,multDimArr)) {
+            multDimArr.splice(this.multDimIndex(posI,posJ,multDimArr),1)
+        }
     },
 
     //function to get the color of a piece at a specific position
@@ -352,28 +395,25 @@ const game = {
         //Move up while the colors are the same
         while (nextColorUp === thisColorUp) {
         
-            //Determines if value exists in jagged array
-            let includes = this.jaggedIncludes(posI,posJ - i,this.group);
+            //Determines if value exists in multidimensional coordinate array
+            let includes = this.multDimIncludes(posI,posJ - i,this.group);
 
             //push the current piece to the group array as long as it is not already in it
             if (includes === false) {
                 this.group.push([posI,posJ - i])
+                //Checks if the piece to the left is the same color
+                if (this.checkColor(posI - 1, posJ - i) === thisColorUp) {
+                    //if it is the same color, start grouping left on this piece
+                    this.groupLeft(posI - 1, posJ - i)
+                }
+
+                //Checks if the piece right is the same color
+                if (this.checkColor(posI + 1, posJ - i) === thisColorUp) {
+                    //if it is the same color, start grouping right on this piece
+                    this.groupRight(posI + 1, posJ - i)
+                }
             }
             
-            //Checks if the piece to the left is the same color
-            if (this.checkColor(posI - 1, posJ - i) === thisColorUp) {
-                console.log("left")
-                //if it is the same color, start grouping left on this piece
-                this.groupLeft(posI - 1, posJ - i)
-            }
-
-            //Checks if the piece right is the same color
-            if (this.checkColor(posI + 1, posJ - i) === thisColorUp) {
-                //if it is the same color, start grouping right on this piece
-                this.groupRight(posI + 1, posJ - i)
-            }
-            
-
             //Add 1 to index value
             i += 1
 
@@ -394,8 +434,8 @@ const game = {
         //Move down while the colors are the same
         while (nextColorDown === thisColorDown) {
         
-            //Determines if value exists in jagged array
-            let includes = this.jaggedIncludes(posI,posJ + i,this.group);
+            //Determines if value exists in multidimensional coordinate array
+            let includes = this.multDimIncludes(posI,posJ + i,this.group);
             
             //push the current piece to the group array as long as it is not already in it
             if (includes === false) {
@@ -437,28 +477,27 @@ const game = {
         //Move left while the colors are the same
         while (nextColorLeft === thisColorLeft) {
         
-            //Determines if value exists in jagged array
-            let includes = this.jaggedIncludes(posI - i,posJ,this.group);
+            //Determines if value exists in multidimensional coordinate array
+            let includes = this.multDimIncludes(posI - i,posJ,this.group);
 
             //push the current piece to the group array as long as it is not already in it
             if (includes === false) {
                 this.group.push([posI - i,posJ])
+                //Checks if the piece up is the same color
+                if (this.checkColor(posI - i, posJ - 1) === thisColorLeft) {
+
+                    //if it is the same color, start grouping up on this piece
+                    this.groupUp(posI - i, posJ - 1)
+                }
+
+                //Checks if the piece down is the same color
+                if (this.checkColor(posI - i, posJ + 1) === thisColorLeft) {
+
+                    //if it is the same color, start grouping down on this piece
+                    this.groupDown(posI - i, posJ + 1)
+                }
             }
             
-            //Checks if the piece up is the same color
-            if (this.checkColor(posI - i, posJ - 1) === thisColorLeft) {
-
-                //if it is the same color, start grouping up on this piece
-                this.groupUp(posI - i, posJ - 1)
-            }
-
-            //Checks if the piece down is the same color
-            if (this.checkColor(posI - i, posJ + 1) === thisColorLeft) {
-
-                //if it is the same color, start grouping down on this piece
-                this.groupDown(posI - i, posJ + 1)
-            }
-
             //Add 1 to index value
             i += 1
 
@@ -480,8 +519,8 @@ const game = {
         //Move Right while the colors are the same
         while (nextColorRight === thisColorRight) {
         
-            //Determines if value exists in jagged array          
-            let includes = this.jaggedIncludes(posI + i,posJ,this.group);
+            //Determines if value exists in multidimensional coordinate array          
+            let includes = this.multDimIncludes(posI + i,posJ,this.group);
 
             //push the current piece to the group array as long as it is not already in it
             if (includes === false) {
@@ -510,123 +549,265 @@ const game = {
         }
     },
 
+    //function takes a piece position as input and outputs the group that contains that piece
+    getGroup: function(posI,posJ) {
+
+        //Get the color of the current piece
+        pieceColor = this.checkColor(posI,posJ);
+
+        //Add the current piece to the group
+        this.group.push([posI,posJ]);
+
+        //If the piece above is the same color, start grouping up
+        if (pieceColor === this.checkColor(posI,posJ - 1)) {
+            this.groupUp(posI,posJ - 1)
+        }
+
+        //If the piece below is the same color, start grouping down
+        if (pieceColor === this.checkColor(posI,posJ + 1)) {
+            this.groupDown(posI,posJ + 1)
+        }
+
+        //If the piece to the left is the same color, start grouping left
+        if (pieceColor === this.checkColor(posI - 1,posJ)) {
+            this.groupLeft(posI - 1,posJ)
+        }
+
+        //If the piece to the right is the same color, start grouping right
+        if (pieceColor === this.checkColor(posI + 1,posJ)) {
+            this.groupRight(posI + 1,posJ)
+        }
+    },
+
+    //function that takes a position and outputs all the liberties of that piece
+    getPieceLiberties: function(posI,posJ) {
+        let pieceLibs = [];
+
+        console.log(posI)
+        //If the position up is in the liberties array, push this position to pieceLibs
+        console.log(this.multDimIncludes(posI,posJ - 1,this.liberties))
+        if (this.multDimIncludes(posI,posJ - 1,this.liberties)) {
+            pieceLibs.push([posI, posJ - 1])
+            console.log("push")
+        }
+
+        //If the position down is in the liberties array, push this position to pieceLibs
+        if (this.multDimIncludes(posI,posJ + 1,this.liberties)) {
+            pieceLibs.push([posI, posJ + 1])
+            console.log("push")
+        }
+    
+        //If the position left is in the liberties array, push this position to pieceLibs
+        if (this.multDimIncludes(posI - 1,posJ,this.liberties)) {
+            pieceLibs.push([posI - 1, posJ])
+            console.log("push")
+        }
+
+        //If the position right is in the liberties array, push this position to pieceLibs
+        if (this.multDimIncludes(posI + 1,posJ,this.liberties)) {
+            pieceLibs.push([posI + 1, posJ])
+            console.log("push")
+        }
+
+        //return pieceLibs
+        return pieceLibs
+    },
+
+    //funtion that takes a group as input and outputs all the liberties of this group.
+    //group is a multidimensional coordinate array
+    getGroupLiberties: function(group) {
+
+        //loop over the array of coordinates and getPieceLiberties on each position. 
+        //push each value to libs array
+
+        let libs = [];
+
+        for (let i = 0; i < group.length; i++) {
+
+            const libArr = this.getPieceLiberties(group[i][0],group[i][1])
+            for (let j = 0; j < libArr.length; j++) {
+                libs.push([libArr[j][0],libArr[j][1]]);   
+            }
+        }
+        return libs
+    },  
+
+    //function that checks if a position has a piece on it
+    checkIfPlaced: function (posI,posJ) {
+        //Loop across the multidimensional coordinate array of active moves and see if the piece has been played
+        let placed = false;
+        for (let i = 0; i < this.activeMoves.length; i++) {
+            if (this.activeMoves[i][0] === (posI)) {
+                if (this.activeMoves[i][1] === (posJ)) {
+                    placed = true;
+                }
+            }
+        }
+        return placed
+    },
+
+    //function to capture a group
+    capture: function(group) {
+
+        //loop over the group array and get each coordinate array
+        for (let i = 0; i < group.length; i++) {
+
+            //singular coordinate array
+            let pieceLocation = group[i]
+
+            //button element containing that coordinate
+            let piece = document.getElementById(`i${pieceLocation[0]}j${pieceLocation[1]}`)
+
+            //first, remove the pieces on the board visually. 
+            piece.style.backgroundImage = 'none'
+            piece.style.background = 'none'
+            piece.style.border = 'none'
+
+            //then place the little grey buttons that show when hovered
+            piece.style.position = "absolute"
+            piece.style.width = "25px"
+            piece.style.height = "25px"
+            piece.style.backgroundPosition = "center center"
+            piece.style.marginLeft = "0px"
+            piece.style.marginRight = "0px"
+            piece.style.marginTop = "0px"
+            piece.style.marginBottom = "0px"
+            piece.style.textAlign = "center"
+            piece.style.verticalAlign = "center"
+            piece.setAttribute("onmouseover","hoverThis(this)")
+            piece.setAttribute("onmouseout","dontHoverThis(this)")
+            piece.setAttribute("onclick","game.place(this)")
+
+            //makes sure the button size matches the board size
+            if (document.getElementById("myDiv").clientWidth === 350) {
+                piece.style.top = "10%"
+                piece.style.left = "10%"
+                piece.style.width = "15px"
+                piece.style.height = "15px"
+                piece.style.backgroundSize = "15px 15px"
+            }
+
+            //now the piece needs to be removed from the game logic
+            //to do this, start by removing the pieces from activeMoves
+            this.multDimRemove(pieceLocation[0],pieceLocation[1],this.activeMoves)
+
+            //then push theses positions to the liberties array
+            this.liberties.push([pieceLocation[0],pieceLocation[1]])
+        }
+    },
+
     //function that checks adjacent pieces for capture on every place
-    checkCapture: function(posI,posJ,moveCount) {
+    checkCapture: function(posI,posJ) {
+
+        //get the color of the current piece
+        let currentColor = this.checkColor(posI,posJ)
+
+        //Get the coordinates of the pieces adjacent 
+        let upPos = [posI,posJ - 1];
+        let downPos = [posI,posJ + 1];
+        let leftPos = [posI - 1,posJ];
+        let rightPos = [posI + 1,posJ];
+
+        //get the color of all adjacent pieces
+        let upColor = this.checkColor(upPos[0],upPos[1])
+        let downColor = this.checkColor(downPos[0],downPos[1])
+        let leftColor = this.checkColor(leftPos[0],leftPos[1])
+        let rightColor = this.checkColor(rightPos[0],rightPos[1])
+
+        //Initialize arrays for the groups in each direction
+        let upGroup = [];
+        let downGroup = [];
+        let leftGroup = [];
+        let rightGroup = [];
+
+        //first checks if adjacent piece has been placed
+        //then checks adjacent piece to see if it is opposite color 
+        //if the piece is the opposite color, get the group that contains this piece
         
-       //first checks all adjacent pieces to see if any are opposite color. 
-       //if any adjacent pieces are the opposite color, push this position to group array as well as any adjacent pieces of same color
-       //checks color using moveCounter
-
-       //The color of the recently played piece
-       currentColor = (moveCount % 2 === 0);
-
-       //Only check adjacent pieces up if there is space to move up
-        if (posJ != 0) {
-            
-            //Array for the location of the adjacent piece in the up direction
-            adjacentUp = [posI, posJ - 1]
-            
-            //Loop across the jagged array of active moves and see if the adjacent piece has been played
-            for (let i = 0; i < this.activeMoves.length; i++) {
-                if (this.activeMoves[i][0] === (adjacentUp[0])) {
-                    if (this.activeMoves[i][1] === (adjacentUp[1])) {
-
-                        //If the piece has been played, check the color of this piece and start grouping if it is opposite the played piece. 
-                        color = this.checkColor(adjacentUp[0],adjacentUp[1])
-                        if (color != currentColor) {
-                            let includes = this.jaggedIncludes(adjacentUp[0],adjacentUp[1],this.group);
-
-                            if (includes === false) {
-                                this.group.push([adjacentUp[0],adjacentUp[1]]) 
-                            }
-
-                            this.groupUp(adjacentUp[0],adjacentUp[1])
-                        }
-                    }
-                } 
+        if (this.checkIfPlaced(upPos[0],upPos[1]) === true) {
+            if (currentColor != upColor) {
+                this.getGroup(posI, posJ - 1)
+                upGroup = this.group;
+                this.group = [];
             }
-        } 
+        }
 
-        //Only check adjacent pieces down if there is space to move down
-        if (posJ != 18) {
-            
-            //Array for the location of the adjacent piece in the down direction
-            adjacentDown = [posI, posJ + 1]
-            
-            //Loop across the jagged array of active moves and see if the adjacent piece has been played
-            for (let i = 0; i < this.activeMoves.length; i++) {
-                if (this.activeMoves[i][0] === (adjacentDown[0])) {
-                    if (this.activeMoves[i][1] === (adjacentDown[1])) {
-
-                        //If the piece has been played, check the color of this piece and start group if it is opposite the played piece. 
-                        color = this.checkColor(adjacentDown[0],adjacentDown[1])
-                        if (color != currentColor) {
-                            let includes = this.jaggedIncludes(adjacentDown[0],adjacentDown[1],this.group);
-                            
-                            if (includes === false) {
-                                this.group.push([adjacentDown[0],adjacentDown[1]]) 
-                            }
-
-                            this.groupDown(adjacentDown[0],adjacentDown[1])
-                        }
-                    }
-                } 
+        if (this.checkIfPlaced(downPos[0],downPos[1]) === true) {
+            if (currentColor != downColor) {
+                this.getGroup(posI, posJ + 1)
+                downGroup = this.group
+                this.group = [];
             }
-        } 
+        }
+
+        if (this.checkIfPlaced(leftPos[0],leftPos[1]) === true) {
+            if (currentColor != leftColor) {
+                this.getGroup(posI - 1, posJ)
+                leftGroup = this.group
+                this.group = [];
+            }
+        }
+
+        if (this.checkIfPlaced(rightPos[0],rightPos[1]) === true) {
+            if (currentColor != rightColor) {
+                this.getGroup(posI + 1, posJ)
+                rightGroup = this.group
+                this.group = [];
+            }
+        }//Groups attained
+
+        //first check if the group exists
+        //then check if the first position of the group exists in activeMoves.
+        //this needs to be done since any of upGroup, downGroup, leftGroup, and rightGroup could be the same
+        if(upGroup.length > 0) {
+            if (this.checkIfPlaced(upGroup[0][0],upGroup[0][1])) {
+                console.log(upGroup)
+                console.log(this.getGroupLiberties(upGroup))
+                //get the liberties of upGroup
+                //if there are no liberites, capture the group
+                if (this.getGroupLiberties(upGroup).length === 0) {
+                    this.capture(upGroup)
+                }
+            }
+        }
         
-        //Only check adjacent pieces left if there is space to move left
-        if (posI != 0) {
-            
-            //Array for the location of the adjacent piece in the left direction
-            adjacentLeft = [posI - 1, posJ]
-            
-            //Loop across the jagged array of active moves and see if the adjacent piece has been played
-            for (let i = 0; i < this.activeMoves.length; i++) {
-                if (this.activeMoves[i][0] === (adjacentLeft[0])) {
-                    if (this.activeMoves[i][1] === (adjacentLeft[1])) {
+        //first check if the group exists
+        if(downGroup.length > 0) {
+            //check if the first position exists in activeMoves.
+            if (this.checkIfPlaced(downGroup[0][0],downGroup[0][1])) {
 
-                        //If the piece has been played, check the color of this piece and start group if it is opposite the played piece. 
-                        color = this.checkColor(adjacentLeft[0],adjacentLeft[1])
-                        if (color != currentColor) {
-                            let includes = this.jaggedIncludes(adjacentLeft[0],adjacentLeft[1],this.group);
-                            
-                            if (includes === false) {
-                                this.group.push([adjacentLeft[0],adjacentLeft[1]]) 
-                            }
-
-                            this.groupLeft(adjacentLeft[0],adjacentLeft[1])
-                        }
-                    }
-                } 
+                //get the liberties of downGroup
+                //if there are no liberites, capture the group
+                if (this.getGroupLiberties(downGroup).length === 0) {
+                    this.capture(downGroup)
+                }
             }
-        } 
+        }
 
-        //Only check adjacent pieces right if there is space to move right
-        if (posI != 18) {
-            
-            //Array for the location of the adjacent piece in the right direction
-            adjacentRight = [posI + 1, posJ]
-            
-            //Loop across the jagged array of active moves and see if the adjacent piece has been played
-            for (let i = 0; i < this.activeMoves.length; i++) {
-                if (this.activeMoves[i][0] === (adjacentRight[0])) {
-                    if (this.activeMoves[i][1] === (adjacentRight[1])) {
+        //first check if the group exists
+        if(leftGroup.length > 0) {
+            //check if the first position exists in activeMoves.
+            if (this.checkIfPlaced(leftGroup[0][0],leftGroup[0][1])) {
 
-                        //If the piece has been played, check the color of this piece and start group if it is opposite the played piece. 
-                        color = this.checkColor(adjacentRight[0],adjacentRight[1])
-                        if (color != currentColor) {
-                            let includes = this.jaggedIncludes(adjacentRight[0],adjacentRight[1],this.group);
-                            
-                            if (includes === false) {
-                                this.group.push([adjacentRight[0],adjacentRight[1]]) 
-                            }
-                            this.groupRight(adjacentRight[0],adjacentRight[1])
-                        }
-                    }
-                } 
+                //get the liberties of leftGroup
+                //if there are no liberites, capture the group
+                if (this.getGroupLiberties(leftGroup).length === 0) {
+                    this.capture(leftGroup)
+                }
             }
-        } 
-        console.log(this.group)
-    } //End of checkCapture function
+        }
 
-}// End of game object
+        //first check if the group exists
+        if(rightGroup.length > 0) {
+            //check if the first position exists in activeMoves.
+            if (this.checkIfPlaced(rightGroup[0][0],rightGroup[0][1])) {
+
+                //get the liberties of rightGroup
+                //if there are no liberites, capture the group
+                if (this.getGroupLiberties(rightGroup).length === 0) {
+                    this.capture(rightGroup)
+                }
+            }
+        }
+    },
+}
