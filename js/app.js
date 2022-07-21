@@ -343,10 +343,10 @@ const game = {
         this.multDimRemove(iPos,jPos,this.liberties)
 
         //function that checks for capture
-        this.checkCapture(iPos,jPos)
+        let capturedOne = this.checkCapture(iPos,jPos)
 
         //function to check for eyes every play
-        this.checkEyes()
+        this.checkEyes(capturedOne)
 
         //function to keep track of the liberty score for each color
         this.getLibScore()
@@ -694,13 +694,6 @@ const game = {
     //function to capture a group
     capture: function(group) {
 
-        //start by adding the number of caputured pieces to the score of the respective color
-        if (this.checkColor(group[0][0],group[0][1]) === true) {
-            this.blackCaptured += group.length
-        } else {
-            this.whiteCaptured += group.length
-        }
-
         //loop over the group array and get each coordinate array
         for (let i = 0; i < group.length; i++) {
 
@@ -745,6 +738,13 @@ const game = {
 
             //then push theses positions to the liberties array
             this.liberties.push([pieceLocation[0],pieceLocation[1]])
+
+            //then add the number of caputured pieces to the score of the respective color
+            if (this.checkColor(group[0][0],group[0][1]) === true) {
+                this.blackCaptured += group.length
+            } else {
+                this.whiteCaptured += group.length
+            }
         }
     },
 
@@ -793,6 +793,10 @@ const game = {
         let leftGroup = [];
         let rightGroup = [];
 
+
+        //Used for disabling the button of the captured group if the length of the group is one
+        let capturedOne = false;
+
         //first checks if adjacent piece has been placed
         //then checks adjacent piece to see if it is opposite color 
         //if the piece is the opposite color, get the group that contains this piece
@@ -836,10 +840,14 @@ const game = {
             if (this.checkIfPlaced(upGroup[0][0],upGroup[0][1])) {
 
                 //get the liberties of upGroup
-                //if there are no liberites, capture the group
+                //if there are no liberties, capture the group
                 if (this.getGroupLiberties(upGroup).length === 0) {
                     if (upColor != thisColor && (upColor === true || upColor === false)) {
                     this.capture(upGroup)
+                        //Will disbale the button of the group if the caputured group is only one piece
+                        if (upGroup.length === 1) {
+                            capturedOne = true;
+                        }
                     }
                 }
             }
@@ -851,10 +859,14 @@ const game = {
             if (this.checkIfPlaced(downGroup[0][0],downGroup[0][1])) {
 
                 //get the liberties of downGroup
-                //if there are no liberites, capture the group
+                //if there are no liberties, capture the group
                 if (this.getGroupLiberties(downGroup).length === 0) {
                     if (downColor != thisColor && (downColor === true || downColor === false)) {
                         this.capture(downGroup)
+                        //Will disbale the button of the group if the caputured group is only one piece
+                        if (downGroup.length === 1) {
+                            capturedOne = true;
+                        }
                     }
                 }
             }
@@ -866,10 +878,14 @@ const game = {
             if (this.checkIfPlaced(leftGroup[0][0],leftGroup[0][1])) {
 
                 //get the liberties of leftGroup
-                //if there are no liberites, capture the group
+                //if there are no liberties, capture the group
                 if (this.getGroupLiberties(leftGroup).length === 0) {
                     if (leftColor != thisColor && (leftColor === true || leftColor === false)) {
                     this.capture(leftGroup)
+                        //Will disbale the button of the group if the caputured group is only one piece
+                        if (leftGroup.length === 1) {
+                            capturedOne = true;
+                        }
                     }
                 }
             }
@@ -881,18 +897,24 @@ const game = {
             if (this.checkIfPlaced(rightGroup[0][0],rightGroup[0][1])) {
 
                 //get the liberties of rightGroup
-                //if there are no liberites, capture the group
+                //if there are no liberties, capture the group
                 if (this.getGroupLiberties(rightGroup).length === 0) {
                     if (rightColor != thisColor && (rightColor === true || rightColor === false)) {
                     this.capture(rightGroup)
+                        //Will disbale the button of the group if the caputured group is only one piece
+                        if (rightGroup.length === 1) {
+                            capturedOne = true;
+                        }
                     }
                 }
             }
         }
+
+        return capturedOne
     },
 
     //function to check for eyes on every move and disable the neccessary ones. 
-    checkEyes: function() {
+    checkEyes: function(capturedOne) {
 
         //Initially enabled
         let disabled = false
@@ -928,26 +950,26 @@ const game = {
             let rightGroup = [];
 
             //Get the group on each adjacent side of the liberty
-            if (this.checkIfPlaced(upPos[0],upPos[1]) === true) {
+            if (this.checkIfPlaced(upPos[0],upPos[1])) {
                 this.getGroup(posI, posJ - 1)
                 upGroup = this.group;
                 this.group = [];
             }
     
-            if (this.checkIfPlaced(downPos[0],downPos[1]) === true) {
+            if (this.checkIfPlaced(downPos[0],downPos[1])) {
                 this.getGroup(posI, posJ + 1)
                 downGroup = this.group
                 this.group = [];
                 
             }
     
-            if (this.checkIfPlaced(leftPos[0],leftPos[1]) === true) {
+            if (this.checkIfPlaced(leftPos[0],leftPos[1])) {
                 this.getGroup(posI - 1, posJ)
                 leftGroup = this.group
                 this.group = [];
             }
     
-            if (this.checkIfPlaced(rightPos[0],rightPos[1]) === true) {
+            if (this.checkIfPlaced(rightPos[0],rightPos[1])) {
                 this.getGroup(posI + 1, posJ)
                 rightGroup = this.group
                 this.group = [];
@@ -966,19 +988,19 @@ const game = {
                                 //else, disable the liberty
                                 if (this.multDimRemoveDupes(this.getGroupLiberties(upGroup)).length === 1 || this.multDimRemoveDupes(this.getGroupLiberties(downGroup)).length === 1 || this.multDimRemoveDupes(this.getGroupLiberties(leftGroup)).length === 1 || this.multDimRemoveDupes(this.getGroupLiberties(rightGroup)).length === 1) {
                                 } else {
-                                        //disable intersection
-                                        intersection.style.backgroundImage = "none"
-                                        intersection.style.background = "none"
-                                        intersection.style.border = "none"
-                                        intersection.setAttribute("onmouseout","");
-                                        intersection.setAttribute("onmouseover","");
-                                        intersection.setAttribute("onclick","");
-
-                                        disabled = true  
+                                    //disable intersection
+                                    disabled = true  
                                 }
                             }
                         }
                     }
+                }
+            }
+
+            //Another caviat needs to be made since you can capture a piece if that piece was the last move and also captured a group
+            if (capturedOne) {
+                if (this.liberties[this.liberties.length - 1] === [posI,posJ]) {
+                    disabled = true
                 }
             }
         
@@ -1006,6 +1028,13 @@ const game = {
                     intersection.style.height = "15px"
                     intersection.style.backgroundSize = "15px 15px"
                 }
+            } else {
+                intersection.style.backgroundImage = "none"
+                intersection.style.background = "none"
+                intersection.style.border = "none"
+                intersection.setAttribute("onmouseout","");
+                intersection.setAttribute("onmouseover","");
+                intersection.setAttribute("onclick","");
             }
             
         }
