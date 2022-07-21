@@ -259,6 +259,19 @@ const game = {
     //Is empty right now but filled upon startGame
     liberties: [],
 
+    //Keeps track of how many pieces black has captured
+    blackCaptured: 0,
+
+    //Keeps track of how many pieces white has captured
+    //Since black goes first, white gets a 0.5 point advantage. This prevents a tie from ever happening since there are only integer points.
+    whiteCaptured: 0.5,
+
+    //Used to compute how many liberties black has at end of game
+    blackLibs: 0,
+
+    //Used to compute how many liberties white has at end of game
+    whiteLibs: 0,
+
     //function to make the coordinate array. Called once on startGame.
     makeCoors: function() {
         for (let i = 0;i < 19; i++) {
@@ -334,6 +347,9 @@ const game = {
 
         //function to check for eyes every play
         this.checkEyes()
+
+        //function to keep track of the liberty score for each color
+        this.getLibScore()
 
         //Save the id of the clicked button so that the green border can be changed to black
         buttonId = obj.id;
@@ -678,6 +694,13 @@ const game = {
     //function to capture a group
     capture: function(group) {
 
+        //start by adding the number of caputured pieces to the score of the respective color
+        if (this.checkColor(group[0][0],group[0][1]) === true) {
+            this.blackCaptured += group.length
+        } else {
+            this.whiteCaptured += group.length
+        }
+
         //loop over the group array and get each coordinate array
         for (let i = 0; i < group.length; i++) {
 
@@ -723,6 +746,27 @@ const game = {
             //then push theses positions to the liberties array
             this.liberties.push([pieceLocation[0],pieceLocation[1]])
         }
+    },
+
+    //function to keep track of the number of liberties for each color after each move
+    getLibScore: function() {
+
+        let whiteLiberties = [];
+        let blackLiberties = [];
+
+        for (let i = 0; i < this.activeMoves.length; i++) {
+            let posLibs = this.getPositionLiberties(this.activeMoves[i][0],this.activeMoves[i][1])
+            for (let j = 0; j < posLibs.length; j++) {
+                if (this.checkColor(this.activeMoves[i][0],this.activeMoves[i][1]) === false) {
+                        blackLiberties.push([posLibs[j][0],posLibs[j][1]])
+                } else {
+                        whiteLiberties.push([posLibs[j][0],posLibs[j][1]])
+                }
+            }
+        }
+
+        this.whiteLibs = this.multDimRemoveDupes(whiteLiberties).length;
+        this.blackLibs = this.multDimRemoveDupes(blackLiberties).length;
     },
 
     //function that checks adjacent pieces for capture on every place
@@ -855,7 +899,6 @@ const game = {
 
         //Get the color of the most recent move
         let recentColor = (this.moveCounter % 2 === 0);
-        console.log(recentColor)
 
         //for every intersection on the board, get the liberties of this intersection
         for (let i = 0; i < this.liberties.length; i++) {
@@ -918,16 +961,11 @@ const game = {
                         if(leftColor === recentColor || leftPos[0] < 0) {
                             if(rightColor === recentColor || rightPos[0] > 18) {
 
-                                console.log(this.multDimRemoveDupes(this.getGroupLiberties(upGroup)))
-                                console.log(this.multDimRemoveDupes(this.getGroupLiberties(downGroup)))
-                                console.log(this.multDimRemoveDupes(this.getGroupLiberties(leftGroup)))
-                                console.log(this.multDimRemoveDupes(this.getGroupLiberties(rightGroup)))
                                 //there is an exception where a piece can be placed on an eye if it will capture a group
                                 //if any of the adjacent groups have this liberty as their only liberty, the intersection will be enabled
                                 //else, disable the liberty
                                 if (this.multDimRemoveDupes(this.getGroupLiberties(upGroup)).length === 1 || this.multDimRemoveDupes(this.getGroupLiberties(downGroup)).length === 1 || this.multDimRemoveDupes(this.getGroupLiberties(leftGroup)).length === 1 || this.multDimRemoveDupes(this.getGroupLiberties(rightGroup)).length === 1) {
                                 } else {
-                                        console.log("disable")
                                         //disable intersection
                                         intersection.style.backgroundImage = "none"
                                         intersection.style.background = "none"
