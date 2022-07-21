@@ -274,24 +274,18 @@ const game = {
         //Reset the group
         this.group = [];
 
-        //Get the i and j coordinates of the clicked button by using the location of the parent div
-        iPos = Math.round((parseFloat(((document.getElementById(document.getElementById(obj.id).parentElement.id).style.left)))-0.55)/5.2)
-        jPos = Math.round((parseFloat(((document.getElementById(document.getElementById(obj.id).parentElement.id).style.top)))-0.55)/5.2)
-        
-        //Push these moves to activeMoves and savedMoves
-        this.activeMoves.push([iPos,jPos])
-        this.savedMoves.push([iPos,jPos])
-
-        //function that removes this position from liberties array
-        this.multDimRemove(iPos,jPos,this.liberties)
-
-        //Change the last button pressed to a black border
-        if (this.moveCounter > 0) {
-        document.getElementById(buttonId).style.border = "1px solid black"
-        }
-
         //Add 1 to the move count
         this.moveCounter += 1
+
+        //Get the i and j coordinates of the clicked button by using the location of the parent div
+        let iPos = Math.round((parseFloat(((document.getElementById(document.getElementById(obj.id).parentElement.id).style.left)))-0.55)/5.2)
+        let jPos = Math.round((parseFloat(((document.getElementById(document.getElementById(obj.id).parentElement.id).style.top)))-0.55)/5.2)
+
+        //Change the last button pressed to a black border
+        if (this.moveCounter > 1) {
+            if (this.multDimIncludes(lastButtonInfo[0],lastButtonInfo[1],this.activeMoves))
+        document.getElementById(lastButtonInfo[2]).style.border = "1px solid black"
+        }
 
         //If it is an even numbered move, white goes. Otherwise, black goes. 
         if (this.moveCounter % 2 === 0) {
@@ -328,12 +322,25 @@ const game = {
         document.getElementById(obj.id).setAttribute("onmouseover","");
         document.getElementById(obj.id).setAttribute("onclick","");
 
+        //Push these moves to activeMoves and savedMoves
+        this.activeMoves.push([iPos,jPos])
+        this.savedMoves.push([iPos,jPos])
+
+        //function that removes this position from liberties array
+        this.multDimRemove(iPos,jPos,this.liberties)
+
         //function that checks for capture
         this.checkCapture(iPos,jPos)
 
+        //function to check for eyes every play
+        this.checkEyes()
+
         //Save the id of the clicked button so that the green border can be changed to black
         buttonId = obj.id;
-        return buttonId
+        lastPosI = iPos
+        lastPosJ = jPos;
+        lastButtonInfo = [lastPosI,lastPosJ,buttonId]
+        return lastButtonInfo
     },
 
     //function to test if a coordinate array is in a multidimensional coordinate array
@@ -371,14 +378,18 @@ const game = {
 
     //function to get the color of a piece at a specific position
     checkColor: function(posI,posJ) {
-        for (let i = 0; i < this.savedMoves.length; i++) {
-            if (this.savedMoves[i][0] === (posI)) {
-                if (this.savedMoves[i][1] === (posJ)) {
-                    const moveCount = i + 1;
-                    const color = (moveCount % 2 === 0);
-                    return color
+        if (this.multDimIncludes(posI,posJ,this.activeMoves)) {
+            for (let i = 0; i < this.savedMoves.length; i++) {
+                if (this.savedMoves[i][0] === (posI)) {
+                    if (this.savedMoves[i][1] === (posJ)) {
+                        const moveCount = i + 1;
+                        const color = (moveCount % 2 === 0);
+                        return color
+                    }
                 }
             }
+        } else {
+            return ""
         }
     },
 
@@ -397,10 +408,12 @@ const game = {
         
             //Determines if value exists in multidimensional coordinate array
             let includes = this.multDimIncludes(posI,posJ - i,this.group);
+            console.log(includes)
 
             //push the current piece to the group array as long as it is not already in it
             if (includes === false) {
                 this.group.push([posI,posJ - i])
+
                 //Checks if the piece to the left is the same color
                 if (this.checkColor(posI - 1, posJ - i) === thisColorUp) {
                     //if it is the same color, start grouping left on this piece
@@ -416,7 +429,7 @@ const game = {
             
             //Add 1 to index value
             i += 1
-
+            console.log("up",this.group)
             //Get the color of the next piece up
             nextColorUp = this.checkColor(posI,posJ - i)
         }
@@ -458,7 +471,7 @@ const game = {
 
             //Add 1 to index value
             i += 1
-
+            console.log("down",this.group)
             //Get the color of the next piece down
             nextColorDown = this.checkColor(posI,posJ + i)
         }
@@ -483,6 +496,7 @@ const game = {
             //push the current piece to the group array as long as it is not already in it
             if (includes === false) {
                 this.group.push([posI - i,posJ])
+
                 //Checks if the piece up is the same color
                 if (this.checkColor(posI - i, posJ - 1) === thisColorLeft) {
 
@@ -500,7 +514,7 @@ const game = {
             
             //Add 1 to index value
             i += 1
-
+            console.log("left",this.group)
             //Get the color of the next piece left
             nextColorLeft = this.checkColor(posI - i,posJ)
         }
@@ -540,10 +554,11 @@ const game = {
                 //if it is the same color, start grouping down on this piece
                 this.groupDown(posI + i, posJ + 1)
             }
+            
 
             //Add 1 to index value
             i += 1
-
+console.log("right",this.group)
             //Get the color of the next piece Right
             nextColorRight = this.checkColor(posI + i,posJ)
         }
@@ -553,7 +568,7 @@ const game = {
     getGroup: function(posI,posJ) {
 
         //Get the color of the current piece
-        pieceColor = this.checkColor(posI,posJ);
+        let pieceColor = this.checkColor(posI,posJ);
 
         //Add the current piece to the group
         this.group.push([posI,posJ]);
@@ -579,54 +594,49 @@ const game = {
         }
     },
 
-    //function that takes a position and outputs all the liberties of that piece
-    getPieceLiberties: function(posI,posJ) {
-        let pieceLibs = [];
+    //function that takes a position and outputs all the liberties of that position
+    getPositionLiberties: function(posI,posJ) {
+        let positionLibs = [];
 
-        console.log(posI)
-        //If the position up is in the liberties array, push this position to pieceLibs
-        console.log(this.multDimIncludes(posI,posJ - 1,this.liberties))
+        //If the position up is in the liberties array, push this position to positionLibs
         if (this.multDimIncludes(posI,posJ - 1,this.liberties)) {
-            pieceLibs.push([posI, posJ - 1])
-            console.log("push")
+            positionLibs.push([posI, posJ - 1])
         }
 
-        //If the position down is in the liberties array, push this position to pieceLibs
+        //If the position down is in the liberties array, push this position to positionLibs
         if (this.multDimIncludes(posI,posJ + 1,this.liberties)) {
-            pieceLibs.push([posI, posJ + 1])
-            console.log("push")
+            positionLibs.push([posI, posJ + 1])
         }
     
-        //If the position left is in the liberties array, push this position to pieceLibs
+        //If the position left is in the liberties array, push this position to positionLibs
         if (this.multDimIncludes(posI - 1,posJ,this.liberties)) {
-            pieceLibs.push([posI - 1, posJ])
-            console.log("push")
+            positionLibs.push([posI - 1, posJ])
         }
 
-        //If the position right is in the liberties array, push this position to pieceLibs
+        //If the position right is in the liberties array, push this position to positionLibs
         if (this.multDimIncludes(posI + 1,posJ,this.liberties)) {
-            pieceLibs.push([posI + 1, posJ])
-            console.log("push")
+            positionLibs.push([posI + 1, posJ])
         }
 
-        //return pieceLibs
-        return pieceLibs
+        //return positionLibs
+        return positionLibs
     },
 
     //funtion that takes a group as input and outputs all the liberties of this group.
     //group is a multidimensional coordinate array
     getGroupLiberties: function(group) {
 
-        //loop over the array of coordinates and getPieceLiberties on each position. 
+        //loop over the array of coordinates and getPositionLiberties on each position. 
         //push each value to libs array
 
         let libs = [];
 
         for (let i = 0; i < group.length; i++) {
-
-            const libArr = this.getPieceLiberties(group[i][0],group[i][1])
+            const libArr = this.getPositionLiberties(group[i][0],group[i][1])
             for (let j = 0; j < libArr.length; j++) {
+                if (this.multDimIncludes(libArr[j][0],libArr[j][1],group) === false) {
                 libs.push([libArr[j][0],libArr[j][1]]);   
+                }
             }
         }
         return libs
@@ -700,7 +710,8 @@ const game = {
     checkCapture: function(posI,posJ) {
 
         //get the color of the current piece
-        let currentColor = this.checkColor(posI,posJ)
+        let thisColor = (this.moveCounter % 2 === 0)
+        console.log(thisColor)
 
         //Get the coordinates of the pieces adjacent 
         let upPos = [posI,posJ - 1];
@@ -713,6 +724,7 @@ const game = {
         let downColor = this.checkColor(downPos[0],downPos[1])
         let leftColor = this.checkColor(leftPos[0],leftPos[1])
         let rightColor = this.checkColor(rightPos[0],rightPos[1])
+        console.log(upColor)
 
         //Initialize arrays for the groups in each direction
         let upGroup = [];
@@ -725,7 +737,7 @@ const game = {
         //if the piece is the opposite color, get the group that contains this piece
         
         if (this.checkIfPlaced(upPos[0],upPos[1]) === true) {
-            if (currentColor != upColor) {
+            if (thisColor != upColor) {
                 this.getGroup(posI, posJ - 1)
                 upGroup = this.group;
                 this.group = [];
@@ -733,7 +745,7 @@ const game = {
         }
 
         if (this.checkIfPlaced(downPos[0],downPos[1]) === true) {
-            if (currentColor != downColor) {
+            if (thisColor != downColor) {
                 this.getGroup(posI, posJ + 1)
                 downGroup = this.group
                 this.group = [];
@@ -741,7 +753,7 @@ const game = {
         }
 
         if (this.checkIfPlaced(leftPos[0],leftPos[1]) === true) {
-            if (currentColor != leftColor) {
+            if (thisColor != leftColor) {
                 this.getGroup(posI - 1, posJ)
                 leftGroup = this.group
                 this.group = [];
@@ -749,7 +761,7 @@ const game = {
         }
 
         if (this.checkIfPlaced(rightPos[0],rightPos[1]) === true) {
-            if (currentColor != rightColor) {
+            if (thisColor != rightColor) {
                 this.getGroup(posI + 1, posJ)
                 rightGroup = this.group
                 this.group = [];
@@ -761,12 +773,15 @@ const game = {
         //this needs to be done since any of upGroup, downGroup, leftGroup, and rightGroup could be the same
         if(upGroup.length > 0) {
             if (this.checkIfPlaced(upGroup[0][0],upGroup[0][1])) {
-                console.log(upGroup)
-                console.log(this.getGroupLiberties(upGroup))
+
                 //get the liberties of upGroup
                 //if there are no liberites, capture the group
                 if (this.getGroupLiberties(upGroup).length === 0) {
+                    if (upColor != thisColor && (upColor === true || upColor === false)) {
                     this.capture(upGroup)
+                    console.log("captureUp")
+                    console.log(upColor, thisColor)
+                    }
                 }
             }
         }
@@ -779,7 +794,10 @@ const game = {
                 //get the liberties of downGroup
                 //if there are no liberites, capture the group
                 if (this.getGroupLiberties(downGroup).length === 0) {
-                    this.capture(downGroup)
+                    if (downColor != thisColor && (downColor === true || downColor === false)) {
+                        this.capture(downGroup)
+                        console.log("captureDown")
+                    }
                 }
             }
         }
@@ -792,7 +810,10 @@ const game = {
                 //get the liberties of leftGroup
                 //if there are no liberites, capture the group
                 if (this.getGroupLiberties(leftGroup).length === 0) {
+                    if (leftColor != thisColor && (leftColor === true || leftColor === false)) {
                     this.capture(leftGroup)
+                    console.log("captureLeft")
+                    }
                 }
             }
         }
@@ -805,9 +826,208 @@ const game = {
                 //get the liberties of rightGroup
                 //if there are no liberites, capture the group
                 if (this.getGroupLiberties(rightGroup).length === 0) {
+                    if (rightColor != thisColor && (rightColor === true || rightColor === false)) {
                     this.capture(rightGroup)
+                    console.log("captureRight")
+                    }
                 }
             }
+        }
+    },
+
+    //function to check for eyes on every move and disable to neccessary ones. 
+    checkEyes: function() {
+
+        //Initially enabled
+        let disabled = false
+
+        //Get the color of the most recent move
+        let recentColor = (this.moveCounter % 2 === 0);
+
+        //for every intersection on the board, get the liberties of this intersection
+        for (let i = 0; i < this.liberties.length; i++) {
+            intersectionLibs = this.getPositionLiberties(this.liberties[i][0],this.liberties[i][1])
+            let intersection = document.getElementById(`i${this.liberties[i][0]}j${this.liberties[i][1]}`)
+
+            //i and j coordinates
+            let posI = this.liberties[i][0]
+            let posJ = this.liberties[i][1]
+
+            //Get the coordinates of the pieces adjacent 
+            let upPos = [posI,posJ - 1];
+            let downPos = [posI,posJ + 1];
+            let leftPos = [posI - 1,posJ];
+            let rightPos = [posI + 1,posJ];
+
+            //get the color of all adjacent pieces
+            let upColor = this.checkColor(upPos[0],upPos[1])
+            let downColor = this.checkColor(downPos[0],downPos[1])
+            let leftColor = this.checkColor(leftPos[0],leftPos[1])
+            let rightColor = this.checkColor(rightPos[0],rightPos[1])
+
+            //Initialize arrays for the groups in each direction
+            let upGroup = [];
+            let downGroup = [];
+            let leftGroup = [];
+            let rightGroup = [];
+
+            //Get the group on each adjacent side of the liberty
+            if (this.checkIfPlaced(upPos[0],upPos[1]) === true) {
+                this.getGroup(posI, posJ - 1)
+                upGroup = this.group;
+                this.group = [];
+            }
+    
+            if (this.checkIfPlaced(downPos[0],downPos[1]) === true) {
+                this.getGroup(posI, posJ + 1)
+                downGroup = this.group
+                this.group = [];
+                
+            }
+    
+            if (this.checkIfPlaced(leftPos[0],leftPos[1]) === true) {
+                this.getGroup(posI - 1, posJ)
+                leftGroup = this.group
+                this.group = [];
+            }
+    
+            if (this.checkIfPlaced(rightPos[0],rightPos[1]) === true) {
+                this.getGroup(posI + 1, posJ)
+                rightGroup = this.group
+                this.group = [];
+            }//Groups attained
+
+            //if there are no liberties, check the color of every position adjacent of this position.
+            if (intersectionLibs.length === 0) {
+                //if the color of every position adjacent is the same as the recent color, disable this intersection
+                if(upColor === recentColor) {
+                    if(downColor === recentColor) {
+                        if(leftColor === recentColor) {
+                            if(rightColor === recentColor) {
+                                
+                                //there is an exception where a piece can be placed on an eye if it will capture a group
+                                //if any of the adjacent groups have this liberty as their only liberty, the intersection will be enabled
+                                //else, disable the liberty
+                                if (this.getGroupLiberties(upGroup).length === 1 || this.getGroupLiberties(downGroup).length === 1 || this.getGroupLiberties(leftGroup).length === 1 || this.getGroupLiberties(upGroup).length === 1) {
+                                } else {
+                                        console.log("disable")
+                                        //disable intersection
+                                        intersection.style.backgroundImage = "none"
+                                        intersection.style.background = "none"
+                                        intersection.style.border = "none"
+                                        intersection.setAttribute("onmouseout","");
+                                        intersection.setAttribute("onmouseover","");
+                                        intersection.setAttribute("onclick","");
+
+                                        disabled = true  
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // //the exception to an eye being disabled is if a player can capture a group by playing a piece at the eye
+            
+            // //if the piece exists in activeMoves
+            // if (this.checkIfPlaced(posI,posJ - 1)) {
+
+            //     //get the group of each adjacent piece
+            //     this.group = [];
+            //     this.getGroup(posI,posJ - 1);
+            //     let coors = this.group
+            //     this.group = [];
+
+            //     //get the liberties of this group
+            //     let libs = this.getGroupLiberties(coors)
+            //     console.log(libs)
+
+            //     //if the only liberty of this group is the original liberty, the button will be enabled
+            //     if (libs === this.liberties[i]) {
+            //         disabled = false
+            //     }
+            // }
+
+            // //if the piece exists in activeMoves
+            // if (this.checkIfPlaced(posI,posJ + 1)) {
+
+            //     //get the group of each adjacent piece
+            //     this.group = [];
+            //     this.getGroup(posI,posJ + 1);
+            //     let coors = this.group
+            //     this.group = [];
+
+            //     //get the liberties of this group
+            //     let libs = this.getGroupLiberties(coors)
+
+            //     //if the only liberty of this group is the original liberty, the button will be enabled
+            //     if (libs === this.liberties[i]) {
+            //         disabled = false
+            //     }
+            // }
+
+            // //if the piece exists in activeMoves
+            // if (this.checkIfPlaced(posI - 1,posJ)) {
+
+            //     //get the group of each adjacent piece
+            //     this.group = [];
+            //     this.getGroup(posI - 1,posJ);
+            //     let coors = this.group
+            //     this.group = [];
+
+            //     //get the liberties of this group
+            //     let libs = this.getGroupLiberties(coors)
+
+            //     //if the only liberty of this group is the original liberty, the button will be enabled
+            //     if (libs === this.liberties[i]) {
+            //         disabled = false
+            //     }
+            // }
+
+            // //if the piece exists in activeMoves
+            // if (this.checkIfPlaced(posI + 1,posJ)) {
+
+            //     //get the group of each adjacent piece
+            //     this.group = [];
+            //     this.getGroup(posI + 1,posJ);
+            //     let coors= this.group
+            //     this.group = [];
+                
+            //     //get the liberties of this group
+            //     let libs = this.getGroupLiberties(coors)
+
+            //     //if the only liberty of this group is the original liberty, the button will be enabled
+            //     if (libs === this.liberties[i]) {
+            //         disabled = false
+            //     }
+            // }
+        
+            //If the intersection is not disabled, set the styling back based on the screen size
+            if (disabled === false) {
+            intersection.style.position = "absolute"
+            intersection.style.width = "25px"
+            intersection.style.height = "25px"
+            intersection.style.backgroundPosition = "center center"
+            intersection.style.marginLeft = "0px"
+            intersection.style.marginRight = "0px"
+            intersection.style.marginTop = "0px"
+            intersection.style.marginBottom = "0px"
+            intersection.style.textAlign = "center"
+            intersection.style.verticalAlign = "center"
+            intersection.setAttribute("onmouseover","hoverThis(this)")
+            intersection.setAttribute("onmouseout","dontHoverThis(this)")
+            intersection.setAttribute("onclick","game.place(this)")
+
+                //makes sure the button size matches the board size
+                if (document.getElementById("myDiv").clientWidth === 350) {
+                    intersection.style.top = "10%"
+                    intersection.style.left = "10%"
+                    intersection.style.width = "15px"
+                    intersection.style.height = "15px"
+                    intersection.style.backgroundSize = "15px 15px"
+                }
+            }
+            
         }
     },
 }
