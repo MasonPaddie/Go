@@ -84,7 +84,7 @@ const startGame = () => {
     moveCountButton.innerHTML = "Move Count"
     moveCountButton.style.fontSize = "49px"
     moveCountButton.style.textAlign = "right"
-    moveCountButton.setAttribute("onclick","game.displayMoveCount()")
+    moveCountButton.setAttribute("onclick","game.displayMoveCount(game.displayStatus)")
 
     //Make the call exit button in the bottom right corner 
     var exitGameButton = document.createElement("button")
@@ -521,6 +521,11 @@ const game = {
 
         //function to keep track of the liberty score for each color
         this.getLibScore()
+
+        //display the move count if the display status is true
+        if (this.displayStatus === true) {
+            document.getElementById(obj.id).innerHTML = this.moveCounter
+        }
 
         //Save the id of the clicked button so that the green border can be changed to black
         buttonId = obj.id;
@@ -1310,6 +1315,26 @@ const game = {
         var mediaWidth3 = window.matchMedia("(max-width: 1800px")
         mediaWidthFoo2(mediaWidth3)
         mediaWidth3.addListener(mediaWidthFoo3)
+    },
+
+    //Keeps track of the display status
+    displayStatus: false,
+
+    //function that displays the moveCount when clicked
+    displayMoveCount(currentStatus) {
+        //For every piece in active moves, get the index from saved moves and display it inide the button
+        for (let i = 0; i < this.activeMoves.length; i++) {
+        let piece = [this.activeMoves[i][0],this.activeMoves[i][1]]
+        let elem = document.getElementById(`i${piece[0]}j${piece[1]}`)
+            if (currentStatus === false) {
+                let move = this.multDimIndex(piece[0],piece[1],this.savedMoves) + 1
+                elem.innerHTML = move
+                this.displayStatus = true
+            } else {
+                elem.innerHTML = ""
+                this.displayStatus = false
+            }
+        } 
     },
 
     exitGame: function () {

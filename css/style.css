@@ -59,6 +59,12 @@ button {
     top: 50%
 }
 
+.pieceButton {
+    -webkit-text-stroke: 1px red; /* width and color */
+    font-size: 90%;
+    margin: auto
+}
+
 .howToButton {
     position: absolute;
     bottom: 7%;
