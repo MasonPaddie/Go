@@ -30,6 +30,35 @@ button {
     font-size: 80px;
 }
 
+#callGameButton {
+    -webkit-text-stroke: 1px black;
+}
+
+#exitGameButton {
+    -webkit-text-stroke: 1px black;
+}
+
+#moveCountButton {
+    -webkit-text-stroke: 1px black;
+}
+
+#endDiv {
+    width: 25%;
+    height: 900px;
+    color: #666666;
+    font-style: bold;
+    -webkit-text-stroke: 1px black; /* width and color */
+    background-position: center;
+    background-size: contain;
+    background-repeat: space;
+    background-color: #B47C00;
+    border-radius: 10px;
+    border: 7px solid #A0A0A0;
+    font-size: 80px;
+    right: 2%;
+    top: 50%
+}
+
 .howToButton {
     position: absolute;
     bottom: 7%;

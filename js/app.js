@@ -10,6 +10,27 @@ const startGame = () => {
     document.body.style.backgroundSize = "contain"
     document.body.style.textAlign = "center"
 
+    //insert piece holder images
+    var img = document.createElement("img")
+    img.setAttribute("id","pieceHolderPic2")
+    img.src = "images/pieceHolder.png"
+    document.body.appendChild(img)
+    img.style.position = "absolute"
+    img.style.width = "350px"
+    img.style.height = "350px"
+    img.style.left = "2%"
+
+    //insert piece holder images
+    var img = document.createElement("img")
+    img.setAttribute("id","pieceHolderPic1")
+    img.src = "images/pieceHolder.png"
+    document.body.appendChild(img)
+    img.style.position = "absolute"
+    img.style.width = "350px"
+    img.style.height = "350px"
+    img.style.left = "2%"
+    img.style.top = "800%"
+
     //Make div for the board to be inserted on and append to body
     var newDiv = document.createElement("div")
     document.body.appendChild(newDiv)
@@ -25,17 +46,62 @@ const startGame = () => {
     newDiv.style.backgroundSize = "contain"
 
     //Set board size based on current screen size
-    if (window.innerWidth > 1170) {
-        if (window.innerHeight > 870) {
-            // newDiv.style.width = "750px"
-            // newDiv.style.height = "750px"
-        } 
-    } else {
-            newDiv.style.width = "350px"
-            newDiv.style.height = "350px"
-        }
-
+    console.log(window.innerWidth)
+    if (window.innerWidth < 1170 || window.innerHeight < 870) {
+        newDiv.style.width = "350px"
+        newDiv.style.height = "350px"
+    }
     
+    //Make the call game button in the top right corner 
+    var callGameButton = document.createElement("button")
+    callGameButton.type = "button"
+    callGameButton.setAttribute("id","callGameButton")
+    document.body.appendChild(callGameButton)
+    callGameButton.style.position = "absolute"
+    callGameButton.style.top = "200%"
+    callGameButton.style.right = "5%"
+    callGameButton.style.width = "350px"
+    callGameButton.style.height = "90px"
+    callGameButton.style.backgroundRepeat = "no-repeat"
+    callGameButton.style.backgroundPosition = "left"
+    callGameButton.innerHTML = "Call Game"
+    callGameButton.style.fontSize = "55px"
+    callGameButton.style.textAlign = "right"
+    callGameButton.setAttribute("onclick","game.callGame()")
+    
+    //Make the call exit button in the bottom right corner 
+    var moveCountButton = document.createElement("button")
+    moveCountButton.type = "button"
+    moveCountButton.setAttribute("id","moveCountButton")
+    document.body.appendChild(moveCountButton)
+    moveCountButton.style.position = "absolute"
+    moveCountButton.style.top = "500%"
+    moveCountButton.style.right = "5%"
+    moveCountButton.style.width = "350px"
+    moveCountButton.style.height = "90px"
+    moveCountButton.style.backgroundRepeat = "no-repeat"
+    moveCountButton.style.backgroundPosition = "left"
+    moveCountButton.innerHTML = "Move Count"
+    moveCountButton.style.fontSize = "49px"
+    moveCountButton.style.textAlign = "right"
+    moveCountButton.setAttribute("onclick","game.displayMoveCount()")
+
+    //Make the call exit button in the bottom right corner 
+    var exitGameButton = document.createElement("button")
+    exitGameButton.type = "button"
+    exitGameButton.setAttribute("id","exitGameButton")
+    document.body.appendChild(exitGameButton)
+    exitGameButton.style.position = "absolute"
+    exitGameButton.style.top = "1400%"
+    exitGameButton.style.right = "5%"
+    exitGameButton.style.width = "350px"
+    exitGameButton.style.height = "90px"
+    exitGameButton.style.backgroundRepeat = "no-repeat"
+    exitGameButton.style.backgroundPosition = "left"
+    exitGameButton.innerHTML = "Exit Game"
+    exitGameButton.style.fontSize = "55px"
+    exitGameButton.style.textAlign = "right"
+    exitGameButton.setAttribute("onclick","game.exitGame()")
 
     //functions for media query
     const mediaWidthFoo = (mediaWidth) => {
@@ -45,7 +111,7 @@ const startGame = () => {
             document.getElementById("myDiv").style.width = "350px"
             document.getElementById("myDiv").style.height = "350px"
             document.getElementById("myDiv").style.marginTop = "150px"
-            document.getElementById("myDiv").style.right = "25%"
+            document.getElementById("myDiv").style.right = "30%"
             
             //change width and height of all piece button divs
             for (let i = 0; i < 19; i++) {
@@ -63,33 +129,83 @@ const startGame = () => {
                 document.getElementsByClassName("pieceButton")[i].style.width = "15px"
                 document.getElementsByClassName("pieceButton")[i].style.height = "15px"
                 document.getElementsByClassName("pieceButton")[i].style.backgroundSize = "15px 15px"
-                }
+            }
+
+            //change the style of callGame button
+            document.getElementById("callGameButton").style.width = "100px"
+            document.getElementById("callGameButton").style.fontSize = "25px"
+            document.getElementById("callGameButton").style.textAlign = "center"
+            document.getElementById("callGameButton").style.top = "100%"
+
+            //change the style of exitGame button
+            document.getElementById("exitGameButton").style.width = "100px"
+            document.getElementById("exitGameButton").style.fontSize = "25px"
+            document.getElementById("exitGameButton").style.textAlign = "center"
+            document.getElementById("exitGameButton").style.top = "1000%"
+
+            //change the style of moveCount button
+            document.getElementById("moveCountButton").style.width = "100px"
+            document.getElementById("moveCountButton").style.fontSize = "25px"
+            document.getElementById("moveCountButton").style.textAlign = "center"
+            document.getElementById("moveCountButton").style.top = "600%"
+
+            //Change the size of the piece holder pictures
+            document.getElementById("pieceHolderPic1").style.width = "150px"
+            document.getElementById("pieceHolderPic1").style.height = "150px"
+            document.getElementById("pieceHolderPic2").style.width = "150px"
+            document.getElementById("pieceHolderPic2").style.height = "150px"
 
         } else {
 
-            //Set back to original values if screen goes big
-            document.getElementById("myDiv").style.width = "750px"
-            document.getElementById("myDiv").style.height = "750px"
-            document.getElementById("myDiv").style.top = "100px"
-            document.getElementById("myDiv").style.marginTop = "0px"
-            document.getElementById("myDiv").style.right = "35%"
+            if (mediaHeight.matches === false) {
+                //Set back to original values if screen goes big
+                document.getElementById("myDiv").style.width = "750px"
+                document.getElementById("myDiv").style.height = "750px"
+                document.getElementById("myDiv").style.top = "100px"
+                document.getElementById("myDiv").style.marginTop = "0px"
+                document.getElementById("myDiv").style.right = "35%"
 
-            for (let i = 0; i < 19; i++) {
-                for (let j = 0; j< 19; j++) {
-                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.width = "45px"
-                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.height = "45px"
-                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.backgroundSize = "45px 45px"
-                    
-            }
-            
-            for(let i = 0; i < 361; i++) {
-                document.getElementsByClassName("pieceButton")[i].style.top = "15%"
-                document.getElementsByClassName("pieceButton")[i].style.left = "15%"
-                document.getElementsByClassName("pieceButton")[i].style.width = "30px"
-                document.getElementsByClassName("pieceButton")[i].style.height = "30px"
-                document.getElementsByClassName("pieceButton")[i].style.backgroundSize = "45px 45px"
-                document.getElementsByClassName("pieceButton")[i].style.borderRadius = "15px"
+                for (let i = 0; i < 19; i++) {
+                    for (let j = 0; j< 19; j++) {
+                        document.getElementById(`pieceButtonDivi${i}j${j}`).style.width = "45px"
+                        document.getElementById(`pieceButtonDivi${i}j${j}`).style.height = "45px"
+                        document.getElementById(`pieceButtonDivi${i}j${j}`).style.backgroundSize = "45px 45px"
+                        
+                    }
                 }
+                
+                for(let i = 0; i < 361; i++) {
+                    document.getElementsByClassName("pieceButton")[i].style.top = "15%"
+                    document.getElementsByClassName("pieceButton")[i].style.left = "15%"
+                    document.getElementsByClassName("pieceButton")[i].style.width = "30px"
+                    document.getElementsByClassName("pieceButton")[i].style.height = "30px"
+                    document.getElementsByClassName("pieceButton")[i].style.backgroundSize = "45px 45px"
+                    document.getElementsByClassName("pieceButton")[i].style.borderRadius = "15px"
+                }
+
+                //change the style of callGame button
+                document.getElementById("callGameButton").style.width = "350px"
+                document.getElementById("callGameButton").style.fontSize = "55px"
+                document.getElementById("callGameButton").style.textAlign = "right"
+                document.getElementById("callGameButton").style.top = "200%"
+
+                //change the style of exitGame button
+                document.getElementById("exitGameButton").style.width = "350px"
+                document.getElementById("exitGameButton").style.fontSize = "55px"
+                document.getElementById("exitGameButton").style.textAlign = "right"
+                document.getElementById("exitGameButton").style.top = "1400%"
+
+                //change the style of moveCount button
+                document.getElementById("moveCountButton").style.width = "350px"
+                document.getElementById("moveCountButton").style.fontSize = "49px"
+                document.getElementById("moveCountButton").style.textAlign = "right"
+                document.getElementById("moveCountButton").style.top = "500%"
+
+                //Change the size of the piece holder pictures
+                document.getElementById("pieceHolderPic1").style.width = "350px"
+                document.getElementById("pieceHolderPic1").style.height = "350px"
+                document.getElementById("pieceHolderPic2").style.width = "350px"
+                document.getElementById("pieceHolderPic2").style.height = "350px"
             }
         }
     }
@@ -101,12 +217,13 @@ const startGame = () => {
             document.getElementById("myDiv").style.width = "350px"
             document.getElementById("myDiv").style.height = "350px"
             document.getElementById("myDiv").style.marginTop = "150px"
+            document.getElementById("myDiv").style.right = "30%"
             
             //change width and height of all piece button divs
             for (let i = 0; i < 19; i++) {
                 for (let j = 0; j< 19; j++) {
                     document.getElementById(`pieceButtonDivi${i}j${j}`).style.width = "15px"
-                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.height = "20px"
+                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.height = "15px"
                     document.getElementById(`pieceButtonDivi${i}j${j}`).style.backgroundSize = "15px 15px"
                 }
             }
@@ -118,30 +235,84 @@ const startGame = () => {
                 document.getElementsByClassName("pieceButton")[i].style.width = "15px"
                 document.getElementsByClassName("pieceButton")[i].style.height = "15px"
                 document.getElementsByClassName("pieceButton")[i].style.backgroundSize = "15px 15px"
-                }
+            }
+
+            //change the style of callGame button
+            document.getElementById("callGameButton").style.width = "100px"
+            document.getElementById("callGameButton").style.fontSize = "25px"
+            document.getElementById("callGameButton").style.textAlign = "center"
+            document.getElementById("callGameButton").style.top = "100%"
+
+            //change the style of exitGame button
+            document.getElementById("exitGameButton").style.width = "100px"
+            document.getElementById("exitGameButton").style.fontSize = "25px"
+            document.getElementById("exitGameButton").style.textAlign = "center"
+            document.getElementById("exitGameButton").style.top = "1000%"
+
+            //change the style of moveCount button
+            document.getElementById("moveCountButton").style.width = "100px"
+            document.getElementById("moveCountButton").style.fontSize = "25px"
+            document.getElementById("moveCountButton").style.textAlign = "center"
+            document.getElementById("moveCountButton").style.top = "600%"
+
+            //Change the size of the piece holder pictures
+            document.getElementById("pieceHolderPic1").style.width = "150px"
+            document.getElementById("pieceHolderPic1").style.height = "150px"
+            document.getElementById("pieceHolderPic2").style.width = "150px"
+            document.getElementById("pieceHolderPic2").style.height = "150px"
 
         } else {
 
-            //Set back to original values if screen goes big
-            document.getElementById("myDiv").style.top = "100px"
-            document.getElementById("myDiv").style.marginTop = "0px"
+            if(mediaWidth.matches === false) {
+                //Set back to original values if screen goes big
+                document.getElementById("myDiv").style.width = "750px"
+                document.getElementById("myDiv").style.height = "750px"
+                document.getElementById("myDiv").style.top = "100px"
+                document.getElementById("myDiv").style.marginTop = "0px"
+                document.getElementById("myDiv").style.right = "35%"
 
-            for (let i = 0; i < 19; i++) {
-                for (let j = 0; j< 19; j++) {
-                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.width = "45px"
-                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.height = "45px"
-                    document.getElementById(`pieceButtonDivi${i}j${j}`).style.backgroundSize = "45px 45px"
-                    
-            }
-            
-            for(let i = 0; i < 361; i++) {
-                document.getElementsByClassName("pieceButton")[i].style.top = "15%"
-                document.getElementsByClassName("pieceButton")[i].style.left = "15%"
-                document.getElementsByClassName("pieceButton")[i].style.width = "30px"
-                document.getElementsByClassName("pieceButton")[i].style.height = "30px"
-                document.getElementsByClassName("pieceButton")[i].style.backgroundSize = "45px 45px"
-                document.getElementsByClassName("pieceButton")[i].style.borderRadius = "15px"
+                for (let i = 0; i < 19; i++) {
+                    for (let j = 0; j< 19; j++) {
+                        document.getElementById(`pieceButtonDivi${i}j${j}`).style.width = "45px"
+                        document.getElementById(`pieceButtonDivi${i}j${j}`).style.height = "45px"
+                        document.getElementById(`pieceButtonDivi${i}j${j}`).style.backgroundSize = "45px 45px"
+                        
+                    }
                 }
+                
+                for(let i = 0; i < 361; i++) {
+                    document.getElementsByClassName("pieceButton")[i].style.top = "15%"
+                    document.getElementsByClassName("pieceButton")[i].style.left = "15%"
+                    document.getElementsByClassName("pieceButton")[i].style.width = "30px"
+                    document.getElementsByClassName("pieceButton")[i].style.height = "30px"
+                    document.getElementsByClassName("pieceButton")[i].style.backgroundSize = "45px 45px"
+                    document.getElementsByClassName("pieceButton")[i].style.borderRadius = "15px"
+                }
+                
+
+                //change the style of callGame button
+                document.getElementById("callGameButton").style.width = "350px"
+                document.getElementById("callGameButton").style.fontSize = "55px"
+                document.getElementById("callGameButton").style.textAlign = "right"
+                document.getElementById("callGameButton").style.top = "200%"
+
+                //change the style of exitGame button
+                document.getElementById("exitGameButton").style.width = "350px"
+                document.getElementById("exitGameButton").style.fontSize = "55px"
+                document.getElementById("exitGameButton").style.textAlign = "right"
+                document.getElementById("exitGameButton").style.top = "1400%"
+
+                //change the style of moveCount button
+                document.getElementById("moveCountButton").style.width = "350px"
+                document.getElementById("moveCountButton").style.fontSize = "49px"
+                document.getElementById("moveCountButton").style.textAlign = "right"
+                document.getElementById("moveCountButton").style.top = "500%"
+
+                //Change the size of the piece holder pictures
+                document.getElementById("pieceHolderPic1").style.width = "350px"
+                document.getElementById("pieceHolderPic1").style.height = "350px"
+                document.getElementById("pieceHolderPic2").style.width = "350px"
+                document.getElementById("pieceHolderPic2").style.height = "350px"
             }
         }
     }
@@ -193,7 +364,7 @@ const startGame = () => {
     //Call the makeCoors function to make the liberties on the board
     game.makeCoors();
 
-    //Using media queries in JS is something I did not really understand, and my annotation on it probably reflects that.
+    //Using media queries in JS is something I did not really understand.
     //This link from W3 schools was the template I used to build upon for the media queries.
     //https://www.w3schools.com/howto/howto_js_media_queries.asp
     var mediaWidth = window.matchMedia("(max-width: 1170px)")
@@ -243,7 +414,7 @@ const howToLink = () => {
 //game object
 const game = {
 
-    //Will keep track of what move it is
+    //Keeps track of what move it is
     moveCounter: 0,
 
     //Saves the postion of the active moves. Multi-dimensional array of coordinates
@@ -256,7 +427,7 @@ const game = {
     group: [],
     
     //Keeps track of the active liberties on the board. Initally, every intersection is a liberty.
-    //Is empty right now but filled upon startGame
+    //Is empty right now but filled upon startGame. Multi-dimensional array of coordinates
     liberties: [],
 
     //Keeps track of how many pieces black has captured
@@ -266,10 +437,10 @@ const game = {
     //Since black goes first, white gets a 0.5 point advantage. This prevents a tie from ever happening since there are only integer points.
     whiteCaptured: 0.5,
 
-    //Used to compute how many liberties black has at end of game
+    //Used to compute how many liberties black has after every move
     blackLibs: 0,
 
-    //Used to compute how many liberties white has at end of game
+    //Used to compute how many liberties white has after every move
     whiteLibs: 0,
 
     //function to make the coordinate array. Called once on startGame.
@@ -1038,5 +1209,110 @@ const game = {
             }
             
         }
+    },
+
+    //function that runs when the game is called 
+    callGame: function() {
+
+        //Remove the buttons from the screen
+        document.getElementById("callGameButton").style.display = "none"
+        document.getElementById("exitGameButton").style.display = "none"
+        document.getElementById("moveCountButton").style.display = "none"
+
+        //disable every piece button in the liberties array
+        for (let i = 0; i < this.liberties.length; i++) {
+            document.getElementById(`i${this.liberties[i][0]}j${this.liberties[i][1]}`).style.display = "none"
+        }
+
+        //Make a div on the right side of the screen to display final score information 
+        var endDiv = document.createElement("div");
+        document.body.appendChild(endDiv);
+        endDiv.setAttribute("id","endDiv")
+        endDiv.style.position = "absolute"
+
+        //paragraphs containing score information and winner
+        var para1 = document.createElement("p")
+        var para2 = document.createElement("p")
+        var para3 = document.createElement("p")
+        var para4 = document.createElement("p")
+        var para5 = document.createElement("p")
+
+        endDiv.appendChild(para1)
+        endDiv.appendChild(para2)
+        endDiv.appendChild(para3)
+        endDiv.appendChild(para4)
+        endDiv.appendChild(para5)
+
+        para1.innerHTML += `Black points: ${this.blackCaptured + this.blackLibs}`
+        para2.innerHTML += `Liberties: ${this.blackLibs}, Captures: ${this.blackCaptured}`
+        para3.innerHTML += `White points: ${this.whiteCaptured + this.whiteLibs}`
+        para4.innerHTML += `Liberties: ${this.whiteLibs}, Captures: ${this.whiteCaptured}`
+        if ((this.blackCaptured + this.blackLibs) > (this.whiteCaptured + this.whiteLibs)) {
+            para5.innerHTML += "Black Wins!"
+        } else {
+            para5.innerHTML += "White Wins!"
+        }
+
+        para1.style.fontSize = "70%"
+        para2.style.fontSize = "45%"
+        para3.style.fontSize = "70%"
+        para4.style.fontSize = "45%"
+        para5.style.fontSize = "90%"
+
+        //media queries for text
+        const mediaWidthFoo2 = (mediaWidth2) => {
+            if (mediaWidth2.matches) {
+                para1.style.fontSize = "35px"
+                para2.style.fontSize = "25px"
+                para3.style.fontSize = "35px"
+                para4.style.fontSize = "25px"
+                para5.style.fontSize = "45px"
+                document.getElementById("exitGameEndScreen").style.fontSize = "50px"
+            } else {
+                para1.style.fontSize = "70%"
+                para2.style.fontSize = "45%"
+                para3.style.fontSize = "70%"
+                para4.style.fontSize = "45%"
+                para5.style.fontSize = "90%"
+                document.getElementById("exitGameEndScreen").style.fontSize = "80px"
+            }
+        }
+
+        //media queries for text
+        const mediaWidthFoo3 = (mediaWidth3) => {
+            if (mediaWidth3.matches) {
+                document.getElementById("exitGameEndScreen").style.fontSize = "50px"
+            } else {
+                document.getElementById("exitGameEndScreen").style.fontSize = "80px"
+            }
+        }        
+
+        //Make exit game button on the end screen
+        var exitGameButton = document.createElement("button")
+        exitGameButton.type = "button"
+        exitGameButton.setAttribute("onclick","game.exitGame()")
+        exitGameButton.setAttribute("id","exitGameEndScreen")
+        endDiv.appendChild(exitGameButton)
+        exitGameButton.style.position = "absolute"
+        exitGameButton.style.bottom = "1%"
+        exitGameButton.style.height = "100px"
+        exitGameButton.style.width = "90%"
+        exitGameButton.style.right = "5%"
+        exitGameButton.style.backgroundImage = "none"
+        exitGameButton.style.backgroundColor = "#1E1E1E"
+        exitGameButton.style.color = "#A0A0A0"
+        exitGameButton.innerHTML += "Exit Game"
+
+        var mediaWidth2 = window.matchMedia("(max-width: 1500px")
+        mediaWidthFoo2(mediaWidth2)
+        mediaWidth2.addListener(mediaWidthFoo2)
+
+        var mediaWidth3 = window.matchMedia("(max-width: 1800px")
+        mediaWidthFoo2(mediaWidth3)
+        mediaWidth3.addListener(mediaWidthFoo3)
+    },
+
+    exitGame: function () {
+        window.location.reload()
     },
 }
