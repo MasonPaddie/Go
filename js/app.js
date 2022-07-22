@@ -883,6 +883,7 @@ const game = {
             piece.style.backgroundImage = 'none'
             piece.style.background = 'none'
             piece.style.border = 'none'
+            piece.innerHTML = ""
 
             //then place the little grey buttons that show when hovered
             piece.style.position = "absolute"
@@ -1175,8 +1176,11 @@ const game = {
 
             //Another caviat needs to be made since you can capture a piece if that piece was the last move and also captured a group
             if (capturedOne) {
-                if (this.liberties[this.liberties.length - 1] === [posI,posJ]) {
+                console.log(this.liberties[this.liberties.length - 1])
+                console.log(posI,posJ)
+                if (this.liberties[this.liberties.length - 1][0] === posI && this.liberties[this.liberties.length - 1][1] === posJ) {
                     disabled = true
+                    console.log(disabled)
                 }
             }
         
