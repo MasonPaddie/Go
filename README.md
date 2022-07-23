@@ -31,7 +31,12 @@ If white were to cover the intersections colored green, the black group that is 
 ![Go Board](https://user-images.githubusercontent.com/92054622/180584425-aabb841b-0b8d-4d79-bcde-41626b971989.png)
 
 ## Capturing
-If a group consists of no liberties, the group is captured and removed from the board. In the picture below
+If a group consists of no liberties, the group is captured and removed from the board. In the picture below, white can capture black by playing on the green intersection. 
 
 ![Go Board](https://user-images.githubusercontent.com/92054622/180584553-dc86b951-1801-474b-a94c-85746260c087.png)
+
+If white plays on the green intersection, the black piece is removed from the board. The intersection colored red has no liberties for black, so black cannot play on this intersection. 
+
+![Go Board](https://user-images.githubusercontent.com/92054622/180584622-bc29a192-884b-4539-bc20-3f1ccc69d65e.png)
+
 
