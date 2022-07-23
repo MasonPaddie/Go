@@ -998,10 +998,7 @@ const game = {
             this.blackCaptured += (this.multDimRemoveDupes(group).length)
         } else {
             this.whiteCaptured += (this.multDimRemoveDupes(group).length)
-            console.log(this.whiteCaptured)
         }
-        console.log(this.multDimRemoveDupes(group))
-        console.log(this.whiteCaptured)
     },
 
     //function to keep track of the number of liberties for each color after each move
@@ -1239,7 +1236,7 @@ const game = {
                                 //there is an exception where a piece can be placed on an eye if it will capture a group
                                 //if any of the adjacent groups have this liberty as their only liberty, the intersection will be enabled
                                 //else, disable the liberty
-                                if ((this.multDimRemoveDupes(this.getGroupLiberties(upGroup)).length < 2 && upPos[1] > 0) || (this.multDimRemoveDupes(this.getGroupLiberties(downGroup)).length < 2 && downPos[1] < 18 ) || (this.multDimRemoveDupes(this.getGroupLiberties(leftGroup)).length < 2 && leftPos[0] > 0 ) || (this.multDimRemoveDupes(this.getGroupLiberties(rightGroup)).length < 2 && rightPos[0] < 18)) {
+                                if ((this.multDimRemoveDupes(this.getGroupLiberties(upGroup)).length === 1) || (this.multDimRemoveDupes(this.getGroupLiberties(downGroup)).length === 1) || (this.multDimRemoveDupes(this.getGroupLiberties(leftGroup)).length === 1) || (this.multDimRemoveDupes(this.getGroupLiberties(rightGroup)).length === 1)) {
                                 } else {
                                     //disable intersection
                                     disabled = true  
