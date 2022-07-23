@@ -1228,15 +1228,22 @@ const game = {
 
             //if there are no liberties, check the color of every position adjacent of this position.
             if (intersectionLibs.length === 0) {
+                console.log("here")
+                console.log(this.getGroupLiberties(rightGroup))
+                console.log(rightColor)
+                console.log(recentColor)
+                console.log([[this.liberties[i][0],this.liberties[i][1]]])
+                console.log([[this.liberties[i][0],this.liberties[i][1]]] === this.getGroupLiberties(rightGroup))
                 //if the color of every position adjacent is the same as the recent color, disable this intersection
-                if(upColor === recentColor || upPos[1] < 0) {
-                    if(downColor === recentColor || downPos[1] > 18) {
-                        if(leftColor === recentColor || leftPos[0] < 0) {
-                            if(rightColor === recentColor || rightPos[0] > 18) {
+                if(upColor === recentColor || upPos[1] < 0 || (upColor != recentColor && this.getGroupLiberties(upGroup).length === 1 && this.getGroupLiberties(upGroup)[0][0] === this.liberties[i][0] && this.getGroupLiberties(upGroup)[0][1] === this.liberties[i][1])) {
+                    if(downColor === recentColor || downPos[1] > 18 || (downColor != recentColor && this.getGroupLiberties(downGroup).length === 1 && this.getGroupLiberties(downGroup)[0][0] === this.liberties[i][0] && this.getGroupLiberties(downGroup)[0][1] === this.liberties[i][1])) {
+                        if(leftColor === recentColor || leftPos[0] < 0 || (leftColor != recentColor && this.getGroupLiberties(leftGroup).length === 1 && this.getGroupLiberties(leftGroup)[0][0] === this.liberties[i][0] && this.getGroupLiberties(leftGroup)[0][1] === this.liberties[i][1])) {
+                            if(rightColor === recentColor || rightPos[0] > 18 || (rightColor != recentColor && this.getGroupLiberties(rightGroup).length === 1 && this.getGroupLiberties(rightGroup)[0][0] === this.liberties[i][0] && this.getGroupLiberties(rightGroup)[0][1] === this.liberties[i][1])) {
+                                console.log("here1")
                                 //there is an exception where a piece can be placed on an eye if it will capture a group
                                 //if any of the adjacent groups have this liberty as their only liberty, the intersection will be enabled
                                 //else, disable the liberty
-                                if ((this.multDimRemoveDupes(this.getGroupLiberties(upGroup)).length === 1) || (this.multDimRemoveDupes(this.getGroupLiberties(downGroup)).length === 1) || (this.multDimRemoveDupes(this.getGroupLiberties(leftGroup)).length === 1) || (this.multDimRemoveDupes(this.getGroupLiberties(rightGroup)).length === 1)) {
+                                if ((this.multDimRemoveDupes(this.getGroupLiberties(upGroup)).length === 1 && upColor === recentColor) || (this.multDimRemoveDupes(this.getGroupLiberties(downGroup)).length === 1 && downColor === recentColor) || (this.multDimRemoveDupes(this.getGroupLiberties(leftGroup)).length === 1 && leftColor === recentColor) || (this.multDimRemoveDupes(this.getGroupLiberties(rightGroup)).length === 1 && rightColor === recentColor)) {
                                 } else {
                                     //disable intersection
                                     disabled = true  
