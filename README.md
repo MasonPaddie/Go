@@ -39,4 +39,7 @@ If white plays on the green intersection, the black piece is removed from the bo
 
 ![Go Board](https://user-images.githubusercontent.com/92054622/180584622-bc29a192-884b-4539-bc20-3f1ccc69d65e.png)
 
+Two moves later and black has put white in danger of being captured. Although the green intersection has white pieces on every adjacent intersection, black can capture white by playing on this intersection. Since black can capture white, the intersection is a possible move for black. 
+
+![Go Board](https://user-images.githubusercontent.com/92054622/180584727-b5b492f9-4c81-427a-b661-998921dc39af.png)
 
