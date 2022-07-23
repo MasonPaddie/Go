@@ -51,5 +51,9 @@ In order for black to protect this piece, they must place a piece on the center 
 
 ![goBoardBlackSafe](https://user-images.githubusercontent.com/92054622/180584959-876ab08a-362a-436a-b042-7eed7b52166b.png)
 
+## Scoring
 
+The game ends when both players pass a turn. This means that both players agree there are no longer any good moves for both sides and a final score should be computed. In casual games of go, scoring is time consuming and often not done; the players visually mark off their terrirtory and come to an agreement on who has more, and thus, the winner. In professional games as well as games played on a computer, scoring is calculated. 
+
+There are multiple scoring methods and which one you use depends on where in the world you are. In english speaking countries, area scoring is typically used, and luckily it is easier to code. This score is computed by adding the number of pieces that you captured to the number of liberties you currently have on the board. An important aspect of scoring is that white always starts with a 0.5 point advantage since black always goes first. What this equates to is that if there is a tie, white wins. There are never draws in a game of go. 
 
