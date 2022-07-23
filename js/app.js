@@ -103,6 +103,23 @@ const startGame = () => {
     exitGameButton.style.textAlign = "right"
     exitGameButton.setAttribute("onclick","game.exitGame()")
 
+    //Make the call exit button in the bottom right corner 
+    var howToInGameButton = document.createElement("button")
+    howToInGameButton.type = "button"
+    howToInGameButton.setAttribute("id","howToInGameButton")
+    document.body.appendChild(howToInGameButton)
+    howToInGameButton.style.position = "absolute"
+    howToInGameButton.style.top = "800%"
+    howToInGameButton.style.right = "5%"
+    howToInGameButton.style.width = "350px"
+    howToInGameButton.style.height = "90px"
+    howToInGameButton.style.backgroundRepeat = "no-repeat"
+    howToInGameButton.style.backgroundPosition = "left"
+    howToInGameButton.innerHTML = "How to Play"
+    howToInGameButton.style.fontSize = "49px"
+    howToInGameButton.style.textAlign = "right"
+    howToInGameButton.setAttribute("onclick","howToLink()")
+
     //functions for media query
     const mediaWidthFoo = (mediaWidth) => {
         if (mediaWidth.matches) {
@@ -135,7 +152,7 @@ const startGame = () => {
             document.getElementById("callGameButton").style.width = "100px"
             document.getElementById("callGameButton").style.fontSize = "25px"
             document.getElementById("callGameButton").style.textAlign = "center"
-            document.getElementById("callGameButton").style.top = "100%"
+            document.getElementById("callGameButton").style.top = "400%"
 
             //change the style of exitGame button
             document.getElementById("exitGameButton").style.width = "100px"
@@ -148,6 +165,12 @@ const startGame = () => {
             document.getElementById("moveCountButton").style.fontSize = "25px"
             document.getElementById("moveCountButton").style.textAlign = "center"
             document.getElementById("moveCountButton").style.top = "600%"
+
+            //change the style of howToInGame button
+            document.getElementById("howToInGameButton").style.width = "100px"
+            document.getElementById("howToInGameButton").style.fontSize = "25px"
+            document.getElementById("howToInGameButton").style.textAlign = "center"
+            document.getElementById("howToInGameButton").style.top = "800%"
 
             //Change the size of the piece holder pictures
             document.getElementById("pieceHolderPic1").style.width = "150px"
@@ -200,6 +223,12 @@ const startGame = () => {
                 document.getElementById("moveCountButton").style.fontSize = "49px"
                 document.getElementById("moveCountButton").style.textAlign = "right"
                 document.getElementById("moveCountButton").style.top = "500%"
+                
+                //change the style of howToInGame button
+                document.getElementById("howToInGameButton").style.width = "350px"
+                document.getElementById("howToInGameButton").style.fontSize = "49px"
+                document.getElementById("howToInGameButton").style.textAlign = "right"
+                document.getElementById("howToInGameButton").style.top = "800%"
 
                 //Change the size of the piece holder pictures
                 document.getElementById("pieceHolderPic1").style.width = "350px"
@@ -241,7 +270,7 @@ const startGame = () => {
             document.getElementById("callGameButton").style.width = "100px"
             document.getElementById("callGameButton").style.fontSize = "25px"
             document.getElementById("callGameButton").style.textAlign = "center"
-            document.getElementById("callGameButton").style.top = "100%"
+            document.getElementById("callGameButton").style.top = "400%"
 
             //change the style of exitGame button
             document.getElementById("exitGameButton").style.width = "100px"
@@ -254,6 +283,13 @@ const startGame = () => {
             document.getElementById("moveCountButton").style.fontSize = "25px"
             document.getElementById("moveCountButton").style.textAlign = "center"
             document.getElementById("moveCountButton").style.top = "600%"
+
+
+            //change the style of howToInGame button
+            document.getElementById("howToInGameButton").style.width = "100px"
+            document.getElementById("howToInGameButton").style.fontSize = "25px"
+            document.getElementById("howToInGameButton").style.textAlign = "center"
+            document.getElementById("howToInGameButton").style.top = "800%"
 
             //Change the size of the piece holder pictures
             document.getElementById("pieceHolderPic1").style.width = "150px"
@@ -307,6 +343,12 @@ const startGame = () => {
                 document.getElementById("moveCountButton").style.fontSize = "49px"
                 document.getElementById("moveCountButton").style.textAlign = "right"
                 document.getElementById("moveCountButton").style.top = "500%"
+
+                //change the style of howToInGame button
+                document.getElementById("howToInGameButton").style.width = "350px"
+                document.getElementById("howToInGameButton").style.fontSize = "49px"
+                document.getElementById("howToInGameButton").style.textAlign = "right"
+                document.getElementById("howToInGameButton").style.top = "800%"
 
                 //Change the size of the piece holder pictures
                 document.getElementById("pieceHolderPic1").style.width = "350px"
@@ -408,7 +450,7 @@ function dontHoverThis(obj) {
 
 //Link to the readMe
 const howToLink = () => {
-    
+    window.open('https://github.com/MasonPaddie/Go')
 }
 
 //game object
@@ -420,8 +462,14 @@ const game = {
     //Saves the postion of the active moves. Multi-dimensional array of coordinates
     activeMoves: [],
 
+    //Saves the active moves after every move. Used for study game. Jagged array of coordinates
+    activeSavedMoves: [],
+
     //Saves the position of every move that occurs in order. Multi-dimensional array of coordinates
     savedMoves: [],
+
+    //Saves the active moves after every move. Used for study game. Jagged array of coordinates
+    savedSavedMoves: [],
 
     //Saves the enemy grouped pieces. Multi-dimensional array of coordinates
     group: [],
@@ -509,6 +557,20 @@ const game = {
         //Push these moves to activeMoves and savedMoves
         this.activeMoves.push([iPos,jPos])
         this.savedMoves.push([iPos,jPos])
+
+        //Push all of active moves to activeSaved moves to form jagged array
+        let tempArr = []
+        for (let i = 0; i < this.activeMoves.length; i++) {
+            tempArr.push(this.activeMoves[i])
+        }
+        this.activeSavedMoves.push(tempArr)
+
+        //Push all of saved moves to savedSaved moves to form jagged array
+        let tempArr2 = []
+        for (let i = 0; i < this.savedMoves.length; i++) {
+            tempArr2.push(this.savedMoves[i])
+        }
+        this.savedSavedMoves.push(tempArr2)
 
         //function that removes this position from liberties array
         this.multDimRemove(iPos,jPos,this.liberties)
@@ -1086,7 +1148,6 @@ const game = {
                 }
             }
         }
-
         return capturedOne
     },
 
@@ -1176,11 +1237,8 @@ const game = {
 
             //Another caviat needs to be made since you can capture a piece if that piece was the last move and also captured a group
             if (capturedOne) {
-                console.log(this.liberties[this.liberties.length - 1])
-                console.log(posI,posJ)
                 if (this.liberties[this.liberties.length - 1][0] === posI && this.liberties[this.liberties.length - 1][1] === posJ) {
                     disabled = true
-                    console.log(disabled)
                 }
             }
         
@@ -1225,8 +1283,7 @@ const game = {
 
         //Remove the buttons from the screen
         document.getElementById("callGameButton").style.display = "none"
-        document.getElementById("exitGameButton").style.display = "none"
-        document.getElementById("moveCountButton").style.display = "none"
+        document.getElementById("howToInGameButton").style.display = "none"
 
         //disable every piece button in the liberties array
         for (let i = 0; i < this.liberties.length; i++) {
@@ -1277,6 +1334,7 @@ const game = {
                 para4.style.fontSize = "25px"
                 para5.style.fontSize = "45px"
                 document.getElementById("exitGameEndScreen").style.fontSize = "50px"
+                document.getElementById("studyGameEndScreen").style.fontSize = "40px"
             } else {
                 para1.style.fontSize = "70%"
                 para2.style.fontSize = "45%"
@@ -1284,6 +1342,7 @@ const game = {
                 para4.style.fontSize = "45%"
                 para5.style.fontSize = "90%"
                 document.getElementById("exitGameEndScreen").style.fontSize = "80px"
+                document.getElementById("studyGameEndScreen").style.fontSize = "70px"
             }
         }
 
@@ -1291,8 +1350,10 @@ const game = {
         const mediaWidthFoo3 = (mediaWidth3) => {
             if (mediaWidth3.matches) {
                 document.getElementById("exitGameEndScreen").style.fontSize = "50px"
+                document.getElementById("studyGameEndScreen").style.fontSize = "40px"
             } else {
                 document.getElementById("exitGameEndScreen").style.fontSize = "80px"
+                document.getElementById("studyGameEndScreen").style.fontSize = "70px"
             }
         }        
 
@@ -1312,11 +1373,30 @@ const game = {
         exitGameButton.style.color = "#A0A0A0"
         exitGameButton.innerHTML += "Exit Game"
 
+        //Make exit game button on the end screen
+        var studyGameButton = document.createElement("button")
+        studyGameButton.type = "button"
+        studyGameButton.setAttribute("onclick","game.studyGame()")
+        studyGameButton.setAttribute("id","studyGameEndScreen")
+        endDiv.appendChild(studyGameButton)
+        studyGameButton.style.position = "absolute"
+        studyGameButton.style.bottom = "16%"
+        studyGameButton.style.height = "100px"
+        studyGameButton.style.width = "90%"
+        studyGameButton.style.right = "5%"
+        studyGameButton.style.backgroundImage = "none"
+        studyGameButton.style.backgroundColor = "#1E1E1E"
+        studyGameButton.style.color = "#A0A0A0"
+        studyGameButton.innerHTML += "Study Game"
+
+        // //display the move count on every piece
+        this.displayMoveCount(false)
+
         var mediaWidth2 = window.matchMedia("(max-width: 1500px")
         mediaWidthFoo2(mediaWidth2)
         mediaWidth2.addListener(mediaWidthFoo2)
 
-        var mediaWidth3 = window.matchMedia("(max-width: 1800px")
+        var mediaWidth3 = window.matchMedia("(max-width: 1860px")
         mediaWidthFoo2(mediaWidth3)
         mediaWidth3.addListener(mediaWidthFoo3)
     },
@@ -1339,6 +1419,116 @@ const game = {
                 this.displayStatus = false
             }
         } 
+    },
+
+
+    studyGame: function() {
+        //Remove the endDiv from screen
+        document.getElementById("endDiv").style.display = "none"
+        document.getElementById("moveCountButton").style.display = "none"
+
+        //Remove all pieces from the board
+        for (let i = 0; i < this.activeMoves.length; i++) {
+            document.getElementById(`i${this.activeMoves[i][0]}j${this.activeMoves[i][1]}`).style.backgroundImage = 'none'
+            document.getElementById(`i${this.activeMoves[i][0]}j${this.activeMoves[i][1]}`).style.background = 'none'
+            document.getElementById(`i${this.activeMoves[i][0]}j${this.activeMoves[i][1]}`).style.border = 'none'
+            document.getElementById(`i${this.activeMoves[i][0]}j${this.activeMoves[i][1]}`).innerHTML = ''
+        }
+
+        //create element for slider
+        //did not fully understand 
+        //https://www.w3schools.com/howto/howto_js_rangeslider.asp
+        var slider = document.createElement("input")
+        var sliderDiv = document.createElement("div")
+        var sliderP = document.createElement("p")
+        document.body.appendChild(sliderDiv)
+        sliderDiv.appendChild(slider)
+        sliderDiv.appendChild(sliderP)
+        slider.type = "range"
+        slider.setAttribute("min","1")    
+        slider.setAttribute("max",`${this.savedMoves.length}`)
+        slider.setAttribute("value","1")
+        slider.setAttribute("orient","vertical")
+        slider.setAttribute("id","slider")
+        slider.style.width = "8px"
+        slider.style.height = "800px"
+        slider.style.position = "absolute"
+        slider.style.right = "2%"
+
+        sliderP.innerHTML = `Move Count: ${slider.value}`
+        sliderP.style.position = "absolute"
+        sliderP.style.right = "6%"
+        sliderP.style.fontSize = "20px"
+        sliderP.style.fontStyle = "bold"
+        sliderP.style.border = "1ps solid black"
+
+        let moves = this.activeSavedMoves
+        let savedMoves = this.savedSavedMoves
+        slider.oninput = function() {
+            sliderP.innerHTML = `Move Count: ${this.value}`
+
+            //Turn off all buttons
+            for (let i = 0; i < 19; i++) {
+                for (let j = 0; j < 19; j++) {
+                    document.getElementById(`i${i}j${j}`).style.backgroundImage = "none"
+                    document.getElementById(`i${i}j${j}`).style.background = "none"
+                    document.getElementById(`i${i}j${j}`).style.border = "none"
+                    document.getElementById(`i${i}j${j}`).innerHTML = ""
+                }
+            }
+
+
+            //Turn on the buttons that need to be on
+            for (let i = 0; i < moves[this.value - 1].length; i++) {
+                let posI = moves[this.value - 1][i][0]
+                let posJ = moves[this.value - 1][i][1]
+
+                let moveCount = game.multDimIndex(posI,posJ,savedMoves[this.value - 1]) + 1
+    
+                //If it is an even numbered move, white goes. Otherwise, black goes. 
+                if (moveCount % 2 === 0) {
+                    document.getElementById(`i${posI}j${posJ}`).style.backgroundImage = 'url(images/whitePiece.png)'
+                } else {
+                    document.getElementById(`i${posI}j${posJ}`).style.backgroundImage = 'url(images/blackPiece.png)'
+                }
+
+                if (document.getElementById("myDiv").clientWidth === 750) {
+
+                    //Styling applied to every button clicked if the board is 750 pixels across
+                    document.getElementById(`i${posI}j${posJ}`).style.backgroundSize = "45px 45px"
+                    document.getElementById(`i${posI}j${posJ}`).style.borderRadius = "15px"
+                    document.getElementById(`i${posI}j${posJ}`).style.width = "30px"
+                    document.getElementById(`i${posI}j${posJ}`).style.height = "30px"
+                    document.getElementById(`i${posI}j${posJ}`).style.backgroundPosition = "center center"
+                    document.getElementById(`i${posI}j${posJ}`).style.top = "13%"
+                    document.getElementById(`i${posI}j${posJ}`).style.left = "13%"
+
+                    //Styling applied to every button no matter size
+                    document.getElementById(`i${posI}j${posJ}`).style.backgroundPosition = "center center"
+                    document.getElementById(`i${posI}j${posJ}`).style.border = "1 px solid black"
+                } else {
+
+                    //Styling applied if go board is not 750 pixels across
+                    document.getElementById(`i${posI}j${posJ}`).style.backgroundSize = "15px 15px"
+                    document.getElementById(`i${posI}j${posJ}`).style.borderRadius = "7px"
+                    document.getElementById(`i${posI}j${posJ}`).style.width = "15px"
+                    document.getElementById(`i${posI}j${posJ}`).style.height = "15px"
+
+                    //Styling applied to every button no matter size
+                    document.getElementById(`i${posI}j${posJ}`).style.backgroundPosition = "center center"
+                    document.getElementById(`i${posI}j${posJ}`).style.border = "1 px solid black"
+                }
+            }
+
+            //For every piece in this moveCount of activeSavedMoves, set the inner html based on the displayStatusStudy
+            for (let i = 0; i < moves[this.value - 1].length; i++) {
+                if (this.displayStatusStudy === false) {
+                    document.getElementById(`i${moves[this.value - 1][i][0]}j${moves[this.value - 1][i][1]}`).innerHTML = ""
+                } else {
+                    document.getElementById(`i${moves[this.value - 1][i][0]}j${moves[this.value - 1][i][1]}`).innerHTML = i + 1
+                }
+            }
+        }
     },
 
     exitGame: function () {
