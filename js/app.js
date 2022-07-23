@@ -1287,7 +1287,12 @@ const game = {
 
         //disable every piece button in the liberties array
         for (let i = 0; i < this.liberties.length; i++) {
-            document.getElementById(`i${this.liberties[i][0]}j${this.liberties[i][1]}`).style.display = "none"
+            document.getElementById(`i${this.liberties[i][0]}j${this.liberties[i][1]}`).style.background = "none"
+            document.getElementById(`i${this.liberties[i][0]}j${this.liberties[i][1]}`).style.backgroundImage = "none"
+            document.getElementById(`i${this.liberties[i][0]}j${this.liberties[i][1]}`).style.border = "none"
+            document.getElementById(`i${this.liberties[i][0]}j${this.liberties[i][1]}`).setAttribute("onmouseout","");
+            document.getElementById(`i${this.liberties[i][0]}j${this.liberties[i][1]}`).setAttribute("onmouseover","");
+            document.getElementById(`i${this.liberties[i][0]}j${this.liberties[i][1]}`).setAttribute("onclick","");
         }
 
         //Make a div on the right side of the screen to display final score information 
@@ -1445,7 +1450,7 @@ const game = {
         sliderDiv.appendChild(slider)
         sliderDiv.appendChild(sliderP)
         slider.type = "range"
-        slider.setAttribute("min","1")    
+        slider.setAttribute("min","0")    
         slider.setAttribute("max",`${this.savedMoves.length}`)
         slider.setAttribute("value","1")
         slider.setAttribute("orient","vertical")
@@ -1460,7 +1465,7 @@ const game = {
         sliderP.style.right = "6%"
         sliderP.style.fontSize = "20px"
         sliderP.style.fontStyle = "bold"
-        sliderP.style.border = "1ps solid black"
+        sliderP.style.border = "1px solid black"
 
         let moves = this.activeSavedMoves
         let savedMoves = this.savedSavedMoves
@@ -1477,13 +1482,13 @@ const game = {
                 }
             }
 
-
             //Turn on the buttons that need to be on
             for (let i = 0; i < moves[this.value - 1].length; i++) {
                 let posI = moves[this.value - 1][i][0]
                 let posJ = moves[this.value - 1][i][1]
 
                 let moveCount = game.multDimIndex(posI,posJ,savedMoves[this.value - 1]) + 1
+                console.log(posI,posJ)
     
                 //If it is an even numbered move, white goes. Otherwise, black goes. 
                 if (moveCount % 2 === 0) {
@@ -1505,7 +1510,7 @@ const game = {
 
                     //Styling applied to every button no matter size
                     document.getElementById(`i${posI}j${posJ}`).style.backgroundPosition = "center center"
-                    document.getElementById(`i${posI}j${posJ}`).style.border = "1 px solid black"
+                    document.getElementById(`i${posI}j${posJ}`).style.border = "1px solid black"
                 } else {
 
                     //Styling applied if go board is not 750 pixels across
@@ -1516,18 +1521,16 @@ const game = {
 
                     //Styling applied to every button no matter size
                     document.getElementById(`i${posI}j${posJ}`).style.backgroundPosition = "center center"
-                    document.getElementById(`i${posI}j${posJ}`).style.border = "1 px solid black"
+                    document.getElementById(`i${posI}j${posJ}`).style.border = "1px solid black"
                 }
-            }
 
-            //For every piece in this moveCount of activeSavedMoves, set the inner html based on the displayStatusStudy
-            for (let i = 0; i < moves[this.value - 1].length; i++) {
+                //For every piece in this moveCount of activeSavedMoves, set the inner html based on the displayStatusStudy
                 if (this.displayStatusStudy === false) {
                     document.getElementById(`i${moves[this.value - 1][i][0]}j${moves[this.value - 1][i][1]}`).innerHTML = ""
                 } else {
-                    document.getElementById(`i${moves[this.value - 1][i][0]}j${moves[this.value - 1][i][1]}`).innerHTML = i + 1
+                    document.getElementById(`i${moves[this.value - 1][i][0]}j${moves[this.value - 1][i][1]}`).innerHTML = moveCount
                 }
-            }
+            }   
         }
     },
 
