@@ -29,3 +29,9 @@ Groups are formed when pieces of the same color are placed directly adjacent to 
 If white were to cover the intersections colored green, the black group that is encircled would be captured and removed from the board. Black can capture the white group by playing on the intersections colored red. 
 
 ![Go Board](https://user-images.githubusercontent.com/92054622/180584425-aabb841b-0b8d-4d79-bcde-41626b971989.png)
+
+## Capturing
+If a group consists of no liberties, the group is captured and removed from the board. In the picture below
+
+![Go Board](https://user-images.githubusercontent.com/92054622/180584553-dc86b951-1801-474b-a94c-85746260c087.png)
+
