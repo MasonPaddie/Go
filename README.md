@@ -43,3 +43,8 @@ Two moves later and black has put white in danger of being captured. Although th
 
 ![Go Board](https://user-images.githubusercontent.com/92054622/180584727-b5b492f9-4c81-427a-b661-998921dc39af.png)
 
+Black plays on this intersection and captures the white piece. However, the black piece that was recently played has only one intersection. If white were to capture this piece, it would create a endless capture cycle on the two pieces. Because of this, it is a rule that you cannot capture a piece if it was just played and captured a group. This means that the red circle is not a possible move for white on this turn. 
+
+![Go Board](https://user-images.githubusercontent.com/92054622/180584867-20b6fe81-24a5-4018-bddf-0e1825ffc537.png)
+
+
