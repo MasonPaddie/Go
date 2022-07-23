@@ -660,6 +660,19 @@ const game = {
         }
     },
 
+    //function to check color at position during study game
+    checkColorCapture: function(posI,posJ) {
+        for (let i = 0; i < this.savedMoves.length; i++) {
+            if (this.savedMoves[i][0] === (posI)) {
+                if (this.savedMoves[i][1] === (posJ)) {
+                    const moveCount = i + 1;
+                    const color = (moveCount % 2 === 0);
+                    return color
+                }
+            }
+        }
+    },
+
     //function to group together pieces moving up from a position 
     groupUp: function (posI,posJ) {
 
@@ -979,7 +992,10 @@ const game = {
             this.liberties.push([pieceLocation[0],pieceLocation[1]])
 
             //then add the number of caputured pieces to the score of the respective color
-            if (this.checkColor(group[0][0],group[0][1]) === true) {
+            console.log(group[0][0])
+            console.log(group[0][1])
+            console.log()
+            if (this.checkColorCapture(group[0][0],group[0][1]) === true) {
                 this.blackCaptured += group.length
             } else {
                 this.whiteCaptured += group.length
@@ -1452,7 +1468,7 @@ const game = {
         slider.type = "range"
         slider.setAttribute("min","0")    
         slider.setAttribute("max",`${this.savedMoves.length}`)
-        slider.setAttribute("value","1")
+        slider.setAttribute("value","0")
         slider.setAttribute("orient","vertical")
         slider.setAttribute("id","slider")
         slider.style.width = "8px"
@@ -1471,64 +1487,76 @@ const game = {
         let savedMoves = this.savedSavedMoves
         slider.oninput = function() {
             sliderP.innerHTML = `Move Count: ${this.value}`
-
-            //Turn off all buttons
-            for (let i = 0; i < 19; i++) {
-                for (let j = 0; j < 19; j++) {
-                    document.getElementById(`i${i}j${j}`).style.backgroundImage = "none"
-                    document.getElementById(`i${i}j${j}`).style.background = "none"
-                    document.getElementById(`i${i}j${j}`).style.border = "none"
-                    document.getElementById(`i${i}j${j}`).innerHTML = ""
+            if (this.value < 1) {
+                //Turn off all buttons
+                for (let i = 0; i < 19; i++) {
+                    for (let j = 0; j < 19; j++) {
+                        document.getElementById(`i${i}j${j}`).style.backgroundImage = "none"
+                        document.getElementById(`i${i}j${j}`).style.background = "none"
+                        document.getElementById(`i${i}j${j}`).style.border = "none"
+                        document.getElementById(`i${i}j${j}`).innerHTML = ""
+                    }
                 }
-            }
+            } else {
 
-            //Turn on the buttons that need to be on
-            for (let i = 0; i < moves[this.value - 1].length; i++) {
-                let posI = moves[this.value - 1][i][0]
-                let posJ = moves[this.value - 1][i][1]
-
-                let moveCount = game.multDimIndex(posI,posJ,savedMoves[this.value - 1]) + 1
-                console.log(posI,posJ)
-    
-                //If it is an even numbered move, white goes. Otherwise, black goes. 
-                if (moveCount % 2 === 0) {
-                    document.getElementById(`i${posI}j${posJ}`).style.backgroundImage = 'url(images/whitePiece.png)'
-                } else {
-                    document.getElementById(`i${posI}j${posJ}`).style.backgroundImage = 'url(images/blackPiece.png)'
+            
+                //Turn off all buttons
+                for (let i = 0; i < 19; i++) {
+                    for (let j = 0; j < 19; j++) {
+                        document.getElementById(`i${i}j${j}`).style.backgroundImage = "none"
+                        document.getElementById(`i${i}j${j}`).style.background = "none"
+                        document.getElementById(`i${i}j${j}`).style.border = "none"
+                        document.getElementById(`i${i}j${j}`).innerHTML = ""
+                    }
                 }
 
-                if (document.getElementById("myDiv").clientWidth === 750) {
+                //Turn on the buttons that need to be on
+                for (let i = 0; i < moves[this.value - 1].length; i++) {
+                    let posI = moves[this.value - 1][i][0]
+                    let posJ = moves[this.value - 1][i][1]
 
-                    //Styling applied to every button clicked if the board is 750 pixels across
-                    document.getElementById(`i${posI}j${posJ}`).style.backgroundSize = "45px 45px"
-                    document.getElementById(`i${posI}j${posJ}`).style.borderRadius = "15px"
-                    document.getElementById(`i${posI}j${posJ}`).style.width = "30px"
-                    document.getElementById(`i${posI}j${posJ}`).style.height = "30px"
-                    document.getElementById(`i${posI}j${posJ}`).style.backgroundPosition = "center center"
-                    document.getElementById(`i${posI}j${posJ}`).style.top = "13%"
-                    document.getElementById(`i${posI}j${posJ}`).style.left = "13%"
+                    let moveCount = game.multDimIndex(posI,posJ,savedMoves[this.value - 1]) + 1
+        
+                    //If it is an even numbered move, white goes. Otherwise, black goes. 
+                    if (moveCount % 2 === 0) {
+                        document.getElementById(`i${posI}j${posJ}`).style.backgroundImage = 'url(images/whitePiece.png)'
+                    } else {
+                        document.getElementById(`i${posI}j${posJ}`).style.backgroundImage = 'url(images/blackPiece.png)'
+                    }
 
-                    //Styling applied to every button no matter size
-                    document.getElementById(`i${posI}j${posJ}`).style.backgroundPosition = "center center"
-                    document.getElementById(`i${posI}j${posJ}`).style.border = "1px solid black"
-                } else {
+                    if (document.getElementById("myDiv").clientWidth === 750) {
 
-                    //Styling applied if go board is not 750 pixels across
-                    document.getElementById(`i${posI}j${posJ}`).style.backgroundSize = "15px 15px"
-                    document.getElementById(`i${posI}j${posJ}`).style.borderRadius = "7px"
-                    document.getElementById(`i${posI}j${posJ}`).style.width = "15px"
-                    document.getElementById(`i${posI}j${posJ}`).style.height = "15px"
+                        //Styling applied to every button clicked if the board is 750 pixels across
+                        document.getElementById(`i${posI}j${posJ}`).style.backgroundSize = "45px 45px"
+                        document.getElementById(`i${posI}j${posJ}`).style.borderRadius = "15px"
+                        document.getElementById(`i${posI}j${posJ}`).style.width = "30px"
+                        document.getElementById(`i${posI}j${posJ}`).style.height = "30px"
+                        document.getElementById(`i${posI}j${posJ}`).style.backgroundPosition = "center center"
+                        document.getElementById(`i${posI}j${posJ}`).style.top = "13%"
+                        document.getElementById(`i${posI}j${posJ}`).style.left = "13%"
 
-                    //Styling applied to every button no matter size
-                    document.getElementById(`i${posI}j${posJ}`).style.backgroundPosition = "center center"
-                    document.getElementById(`i${posI}j${posJ}`).style.border = "1px solid black"
-                }
+                        //Styling applied to every button no matter size
+                        document.getElementById(`i${posI}j${posJ}`).style.backgroundPosition = "center center"
+                        document.getElementById(`i${posI}j${posJ}`).style.border = "1px solid black"
+                    } else {
 
-                //For every piece in this moveCount of activeSavedMoves, set the inner html based on the displayStatusStudy
-                if (this.displayStatusStudy === false) {
-                    document.getElementById(`i${moves[this.value - 1][i][0]}j${moves[this.value - 1][i][1]}`).innerHTML = ""
-                } else {
-                    document.getElementById(`i${moves[this.value - 1][i][0]}j${moves[this.value - 1][i][1]}`).innerHTML = moveCount
+                        //Styling applied if go board is not 750 pixels across
+                        document.getElementById(`i${posI}j${posJ}`).style.backgroundSize = "15px 15px"
+                        document.getElementById(`i${posI}j${posJ}`).style.borderRadius = "7px"
+                        document.getElementById(`i${posI}j${posJ}`).style.width = "15px"
+                        document.getElementById(`i${posI}j${posJ}`).style.height = "15px"
+
+                        //Styling applied to every button no matter size
+                        document.getElementById(`i${posI}j${posJ}`).style.backgroundPosition = "center center"
+                        document.getElementById(`i${posI}j${posJ}`).style.border = "1px solid black"
+                    }
+
+                    //For every piece in this moveCount of activeSavedMoves, set the inner html based on the displayStatusStudy
+                    if (this.displayStatusStudy === false) {
+                        document.getElementById(`i${moves[this.value - 1][i][0]}j${moves[this.value - 1][i][1]}`).innerHTML = ""
+                    } else {
+                        document.getElementById(`i${moves[this.value - 1][i][0]}j${moves[this.value - 1][i][1]}`).innerHTML = moveCount
+                    }
                 }
             }   
         }
