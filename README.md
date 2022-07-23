@@ -10,5 +10,4 @@ Go is a chinese board game that was invented over two millenium ago. The goal of
 ## The Board
 Go is played on a 19x19 board that initally has no pieces on it. 
 
-<!-- ![Go Board](https://user-images.githubusercontent.com/92054622/180579654-74ede43b-5f70-4dc8-8af5-bd452c47eb91.png) -->
-<img align="center" width="500" height="500" src="http://[www.fillmurray.com/100/100](https://user-images.githubusercontent.com/92054622/180579654-74ede43b-5f70-4dc8-8af5-bd452c47eb91.png)">
+[Go Board](https://user-images.githubusercontent.com/92054622/180579654-74ede43b-5f70-4dc8-8af5-bd452c47eb91.png) 
