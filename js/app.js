@@ -579,7 +579,7 @@ const game = {
         let capturedOne = this.checkCapture(iPos,jPos)
 
         //function to check for eyes every play
-        this.checkEyes(capturedOne)
+        this.checkEyes(iPos,jPos)
 
         //function to keep track of the liberty score for each color
         this.getLibScore()
@@ -692,7 +692,7 @@ const game = {
             //push the current piece to the group array as long as it is not already in it
             if (includes === false) {
                 this.group.push([posI,posJ - i])
-
+                
                 //Checks if the piece to the left is the same color
                 if (this.checkColor(posI - 1, posJ - i) === thisColorUp) {
                     //if it is the same color, start grouping left on this piece
@@ -775,21 +775,22 @@ const game = {
             //push the current piece to the group array as long as it is not already in it
             if (includes === false) {
                 this.group.push([posI - i,posJ])
-
-                //Checks if the piece up is the same color
-                if (this.checkColor(posI - i, posJ - 1) === thisColorLeft) {
-
-                    //if it is the same color, start grouping up on this piece
-                    this.groupUp(posI - i, posJ - 1)
-                }
-
-                //Checks if the piece down is the same color
-                if (this.checkColor(posI - i, posJ + 1) === thisColorLeft) {
-
-                    //if it is the same color, start grouping down on this piece
-                    this.groupDown(posI - i, posJ + 1)
-                }
             }
+
+            //Checks if the piece up is the same color
+            if (this.checkColor(posI - i, posJ - 1) === thisColorLeft) {
+
+                //if it is the same color, start grouping up on this piece
+                this.groupUp(posI - i, posJ - 1)
+            }
+
+            //Checks if the piece down is the same color
+            if (this.checkColor(posI - i, posJ + 1) === thisColorLeft) {
+
+                //if it is the same color, start grouping down on this piece
+                this.groupDown(posI - i, posJ + 1)
+            }
+            
             
             //Add 1 to index value
             i += 1
@@ -990,17 +991,17 @@ const game = {
 
             //then push theses positions to the liberties array
             this.liberties.push([pieceLocation[0],pieceLocation[1]])
-
-            //then add the number of caputured pieces to the score of the respective color
-            console.log(group[0][0])
-            console.log(group[0][1])
-            console.log()
-            if (this.checkColorCapture(group[0][0],group[0][1]) === true) {
-                this.blackCaptured += group.length
-            } else {
-                this.whiteCaptured += group.length
-            }
         }
+
+        //then add the number of caputured pieces to the score of the respective color
+        if (this.checkColorCapture(group[0][0],group[0][1]) === true) {
+            this.blackCaptured += (this.multDimRemoveDupes(group).length)
+        } else {
+            this.whiteCaptured += (this.multDimRemoveDupes(group).length)
+            console.log(this.whiteCaptured)
+        }
+        console.log(this.multDimRemoveDupes(group))
+        console.log(this.whiteCaptured)
     },
 
     //function to keep track of the number of liberties for each color after each move
@@ -1168,19 +1169,17 @@ const game = {
     },
 
     //function to check for eyes on every move and disable the neccessary ones. 
-    checkEyes: function(capturedOne) {
-
-        //Initially enabled
-        let disabled = false
+    checkEyes: function(lastI,lastJ) {
 
         //Get the color of the most recent move
         let recentColor = (this.moveCounter % 2 === 0);
 
         //for every intersection on the board, get the liberties of this intersection
         for (let i = 0; i < this.liberties.length; i++) {
+            //Initially enabled
+            let disabled = false
             intersectionLibs = this.getPositionLiberties(this.liberties[i][0],this.liberties[i][1])
             let intersection = document.getElementById(`i${this.liberties[i][0]}j${this.liberties[i][1]}`)
-
             //i and j coordinates
             let posI = this.liberties[i][0]
             let posJ = this.liberties[i][1]
@@ -1207,6 +1206,7 @@ const game = {
             if (this.checkIfPlaced(upPos[0],upPos[1])) {
                 this.getGroup(posI, posJ - 1)
                 upGroup = this.group;
+                
                 this.group = [];
             }
     
@@ -1236,11 +1236,10 @@ const game = {
                     if(downColor === recentColor || downPos[1] > 18) {
                         if(leftColor === recentColor || leftPos[0] < 0) {
                             if(rightColor === recentColor || rightPos[0] > 18) {
-
                                 //there is an exception where a piece can be placed on an eye if it will capture a group
                                 //if any of the adjacent groups have this liberty as their only liberty, the intersection will be enabled
                                 //else, disable the liberty
-                                if (this.multDimRemoveDupes(this.getGroupLiberties(upGroup)).length === 1 || this.multDimRemoveDupes(this.getGroupLiberties(downGroup)).length === 1 || this.multDimRemoveDupes(this.getGroupLiberties(leftGroup)).length === 1 || this.multDimRemoveDupes(this.getGroupLiberties(rightGroup)).length === 1) {
+                                if ((this.multDimRemoveDupes(this.getGroupLiberties(upGroup)).length < 2 && upPos[1] > 0) || (this.multDimRemoveDupes(this.getGroupLiberties(downGroup)).length < 2 && downPos[1] < 18 ) || (this.multDimRemoveDupes(this.getGroupLiberties(leftGroup)).length < 2 && leftPos[0] > 0 ) || (this.multDimRemoveDupes(this.getGroupLiberties(rightGroup)).length < 2 && rightPos[0] < 18)) {
                                 } else {
                                     //disable intersection
                                     disabled = true  
@@ -1251,8 +1250,8 @@ const game = {
                 }
             }
 
-            //Another caviat needs to be made since you can capture a piece if that piece was the last move and also captured a group
-            if (capturedOne) {
+            //Another caviat needs to be made since you cannot capture a piece if that piece was the last move and also captured a group
+            if (this.getPositionLiberties(lastI,lastJ) === this.liberties[i]) {
                 if (this.liberties[this.liberties.length - 1][0] === posI && this.liberties[this.liberties.length - 1][1] === posJ) {
                     disabled = true
                 }
