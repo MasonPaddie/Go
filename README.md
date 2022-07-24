@@ -85,7 +85,7 @@ After pressing the call game button, the score is calculated and displayed on sc
 
 ## Study Game
 
-The study game feature allows the players to review their moves throughtout the game one at a time. A scroll wheel appears on the right hand side that allows the user to control where in the game they want to be. 
+The study game feature allows the players to review their moves throughout the game one at a time. A scroll wheel appears on the right hand side that allows the user to control where in the game they want to be. 
 
 ![Study Game](https://user-images.githubusercontent.com/92054622/180668199-397f93b2-bc36-4696-8207-585624ff6283.png)
 
