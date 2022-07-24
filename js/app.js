@@ -46,7 +46,7 @@ const startGame = () => {
     newDiv.style.backgroundSize = "contain"
 
     //Set board size based on current screen size
-    console.log(window.innerWidth)
+ 
     if (window.innerWidth < 1170 || window.innerHeight < 870) {
         newDiv.style.width = "350px"
         newDiv.style.height = "350px"
@@ -675,8 +675,7 @@ const game = {
         //get current color and the color of the next piece up
         let thisColorUp = this.checkColor(posI,posJ)
         let nextColorUp = this.checkColor(posI,posJ - i)
-        console.log(thisColorUp)
-        console.log(nextColorUp)
+
         //Move up while the colors are the same
         while (nextColorUp === thisColorUp) {
         
@@ -844,23 +843,22 @@ const game = {
 
         //Add the current piece to the group
         this.group.push([posI,posJ]);
-        console.log(posI,posJ)
-        console.log(this.checkColor(posI,posJ - 1))
+
         //If the piece above is the same color, start grouping up
         if (pieceColor === this.checkColor(posI,posJ - 1)) {
             this.groupUp(posI,posJ - 1)
         }
-console.log(this.checkColor(posI,posJ + 1))
+
         //If the piece below is the same color, start grouping down
         if (pieceColor === this.checkColor(posI,posJ + 1)) {
             this.groupDown(posI,posJ + 1)
         }
-        console.log(this.checkColor(posI-1,posJ))
+
         //If the piece to the left is the same color, start grouping left
         if (pieceColor === this.checkColor(posI - 1,posJ)) {
             this.groupLeft(posI - 1,posJ)
         }
-        console.log(this.checkColor(posI+1,posJ))
+  
         //If the piece to the right is the same color, start grouping right
         if (pieceColor === this.checkColor(posI + 1,posJ)) {
             this.groupRight(posI + 1,posJ)
@@ -1075,15 +1073,11 @@ console.log(this.checkColor(posI,posJ + 1))
         if (this.checkIfPlaced(rightPos[0],rightPos[1]) === true) {
             if (thisColor != rightColor) {
                 this.getGroup(posI + 1, posJ)
-                console.log(rightColor)
                 rightGroup = this.group
                 this.group = [];
             }
         }//Groups attained
-console.log(upGroup)
-console.log(downGroup)
-console.log(leftGroup)
-console.log(rightGroup)
+
         //first check if the group exists
         //then check if the first position of the group exists in activeMoves.
         //this needs to be done since any of upGroup, downGroup, leftGroup, and rightGroup could be the same
