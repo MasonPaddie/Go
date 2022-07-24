@@ -1421,7 +1421,7 @@ const game = {
         mediaWidth3.addListener(mediaWidthFoo3)
     },
 
-    //Keeps track of the display status
+    //Keeps track of the display status for moveCount
     displayStatus: false,
 
     //function that displays the moveCount when clicked
@@ -1476,11 +1476,11 @@ const game = {
         slider.style.right = "2%"
 
         sliderP.innerHTML = `Move Count: ${slider.value}`
+        sliderP.setAttribute("id","sliderPara")
         sliderP.style.position = "absolute"
         sliderP.style.right = "6%"
-        sliderP.style.fontSize = "20px"
+        sliderP.style.fontSize = "40px"
         sliderP.style.fontStyle = "bold"
-        sliderP.style.border = "1px solid black"
 
         let moves = this.activeSavedMoves
         let savedMoves = this.savedSavedMoves
