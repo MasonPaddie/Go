@@ -57,3 +57,6 @@ The game ends when both players pass a turn. This means that both players agree 
 
 There are multiple scoring methods and which one you use depends on where in the world you are. In english speaking countries, area scoring is typically used, and luckily it is easier to code. This score is computed by adding the number of pieces that you captured to the number of liberties you currently have on the board. An important aspect of scoring is that white always starts with a 0.5 point advantage since black always goes first. What this equates to is that if there is a tie, white wins. There are never draws in a game of go. 
 
+# More About This Application
+
+![Home Page](https://user-images.githubusercontent.com/92054622/180667368-d5dc844b-f71d-454e-a243-f5c412d0566d.png)
