@@ -67,11 +67,11 @@ The inital page of the application is the home page which contains the start gam
 
 ## Game Page
 
-Upon pressing start game, you will be taken to this screen pictured below which consists of the:
-Call game button: ends the game and compute the score
-Move count button: displays the move count on each piece on screen
-How to play button: link to README
-Exit game button: Returns to home screen
+Upon pressing start game, you will be taken to this screen pictured below which consists of the: <br>
+Call game button: ends the game and compute the score <br>
+Move count button: displays the move count on each piece on screen <br>
+How to play button: link to README <br>
+Exit game button: Returns to home screen <br>
 
 To place a piece, click on any of the intersections where a grey buttons appears when hovered over it.
 
