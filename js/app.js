@@ -646,15 +646,8 @@ const game = {
     //function to get the color of a piece at a specific position
     checkColor: function(posI,posJ) {
         if (this.multDimIncludes(posI,posJ,this.activeMoves)) {
-            for (let i = 0; i < this.savedMoves.length; i++) {
-                if (this.savedMoves[i][0] === (posI)) {
-                    if (this.savedMoves[i][1] === (posJ)) {
-                        const moveCount = i + 1;
-                        const color = (moveCount % 2 === 0);
-                        return color
-                    }
-                }
-            }
+           let color = this.multDimIndex(posI,posJ,this.savedMoves) % 2 != 0
+           return color
         } else {
             return ""
         }
@@ -682,17 +675,16 @@ const game = {
         //get current color and the color of the next piece up
         let thisColorUp = this.checkColor(posI,posJ)
         let nextColorUp = this.checkColor(posI,posJ - i)
-
+        console.log(thisColorUp)
+        console.log(nextColorUp)
         //Move up while the colors are the same
         while (nextColorUp === thisColorUp) {
         
             //Determines if value exists in multidimensional coordinate array
             let includes = this.multDimIncludes(posI,posJ - i,this.group);
-
             //push the current piece to the group array as long as it is not already in it
             if (includes === false) {
                 this.group.push([posI,posJ - i])
-                
                 //Checks if the piece to the left is the same color
                 if (this.checkColor(posI - 1, posJ - i) === thisColorUp) {
                     //if it is the same color, start grouping left on this piece
@@ -852,26 +844,28 @@ const game = {
 
         //Add the current piece to the group
         this.group.push([posI,posJ]);
-
+        console.log(posI,posJ)
+        console.log(this.checkColor(posI,posJ - 1))
         //If the piece above is the same color, start grouping up
         if (pieceColor === this.checkColor(posI,posJ - 1)) {
             this.groupUp(posI,posJ - 1)
         }
-
+console.log(this.checkColor(posI,posJ + 1))
         //If the piece below is the same color, start grouping down
         if (pieceColor === this.checkColor(posI,posJ + 1)) {
             this.groupDown(posI,posJ + 1)
         }
-
+        console.log(this.checkColor(posI-1,posJ))
         //If the piece to the left is the same color, start grouping left
         if (pieceColor === this.checkColor(posI - 1,posJ)) {
             this.groupLeft(posI - 1,posJ)
         }
-
+        console.log(this.checkColor(posI+1,posJ))
         //If the piece to the right is the same color, start grouping right
         if (pieceColor === this.checkColor(posI + 1,posJ)) {
             this.groupRight(posI + 1,posJ)
         }
+        
     },
 
     //function that takes a position and outputs all the liberties of that position
@@ -1081,11 +1075,15 @@ const game = {
         if (this.checkIfPlaced(rightPos[0],rightPos[1]) === true) {
             if (thisColor != rightColor) {
                 this.getGroup(posI + 1, posJ)
+                console.log(rightColor)
                 rightGroup = this.group
                 this.group = [];
             }
         }//Groups attained
-
+console.log(upGroup)
+console.log(downGroup)
+console.log(leftGroup)
+console.log(rightGroup)
         //first check if the group exists
         //then check if the first position of the group exists in activeMoves.
         //this needs to be done since any of upGroup, downGroup, leftGroup, and rightGroup could be the same
@@ -1171,6 +1169,8 @@ const game = {
         //Get the color of the most recent move
         let recentColor = (this.moveCounter % 2 === 0);
 
+        this.group = []
+
         //for every intersection on the board, get the liberties of this intersection
         for (let i = 0; i < this.liberties.length; i++) {
             //Initially enabled
@@ -1203,7 +1203,6 @@ const game = {
             if (this.checkIfPlaced(upPos[0],upPos[1])) {
                 this.getGroup(posI, posJ - 1)
                 upGroup = this.group;
-                
                 this.group = [];
             }
     
@@ -1228,13 +1227,11 @@ const game = {
 
             //if there are no liberties, check the color of every position adjacent of this position.
             if (intersectionLibs.length === 0) {
-                console.log("here")
                 //if the color of every position adjacent is the same as the recent color, disable this intersection
                 if(upColor === recentColor || upPos[1] < 0 || (upColor != recentColor && this.getGroupLiberties(upGroup).length === 1 && this.getGroupLiberties(upGroup)[0][0] === this.liberties[i][0] && this.getGroupLiberties(upGroup)[0][1] === this.liberties[i][1])) {
                     if(downColor === recentColor || downPos[1] > 18 || (downColor != recentColor && this.getGroupLiberties(downGroup).length === 1 && this.getGroupLiberties(downGroup)[0][0] === this.liberties[i][0] && this.getGroupLiberties(downGroup)[0][1] === this.liberties[i][1])) {
                         if(leftColor === recentColor || leftPos[0] < 0 || (leftColor != recentColor && this.getGroupLiberties(leftGroup).length === 1 && this.getGroupLiberties(leftGroup)[0][0] === this.liberties[i][0] && this.getGroupLiberties(leftGroup)[0][1] === this.liberties[i][1])) {
                             if(rightColor === recentColor || rightPos[0] > 18 || (rightColor != recentColor && this.getGroupLiberties(rightGroup).length === 1 && this.getGroupLiberties(rightGroup)[0][0] === this.liberties[i][0] && this.getGroupLiberties(rightGroup)[0][1] === this.liberties[i][1])) {
-                                console.log("here1")
                                 //there is an exception where a piece can be placed on an eye if it will capture a group
                                 //if any of the adjacent groups have this liberty as their only liberty, the intersection will be enabled
                                 //else, disable the liberty
