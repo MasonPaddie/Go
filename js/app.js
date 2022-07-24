@@ -1229,7 +1229,6 @@ const game = {
                                 //there is an exception where a piece can be placed on an eye if it will capture a group
                                 //if any of the adjacent groups have this liberty as their only liberty, the intersection will be enabled
                                 //else, disable the liberty
-                                //if ((this.multDimRemoveDupes(this.getGroupLiberties(upGroup)).length === 1 && upColor === recentColor) || (this.multDimRemoveDupes(this.getGroupLiberties(downGroup)).length === 1 && downColor === recentColor) || (this.multDimRemoveDupes(this.getGroupLiberties(leftGroup)).length === 1 && leftColor === recentColor) || (this.multDimRemoveDupes(this.getGroupLiberties(rightGroup)).length === 1 && rightColor === recentColor)) {
                                 if ((this.multDimRemoveDupes(this.getGroupLiberties(upGroup)).length === 1) || (this.multDimRemoveDupes(this.getGroupLiberties(downGroup)).length === 1) || (this.multDimRemoveDupes(this.getGroupLiberties(leftGroup)).length === 1) || (this.multDimRemoveDupes(this.getGroupLiberties(rightGroup)).length === 1)) {
                                 } else {
                                     //disable intersection
@@ -1255,7 +1254,111 @@ const game = {
                 }
             }
 
+            //There is another condition where an eye needs to be disabled if the move will form a group that consists of zero liberties of that color. 
 
+            //If there are no liberties for this intersection and one of the adjacent pieces are not the same color as the recent color
+            //get the group of this piece and check its liberties. If it has 1 liberty && 
+            //all the groups adjacent to this liberty equal to the recent color have more than 1 liberty
+            //disable the intersection
+
+            if (intersectionLibs.length === 0) {
+
+                //Condition for piece above
+                if (upColor != recentColor) {
+                    if (this.getGroupLiberties(upGroup).length === 1) {
+                        if (downColor === recentColor) {
+                            if (this.getGroupLiberties(downGroup).length > 1) {
+                                disabled = true
+                            }
+                        }
+
+                        if (leftColor === recentColor) {
+                            if (this.getGroupLiberties(leftGroup).length > 1) {
+                                disabled = true
+                            }
+                        }
+
+                        if (rightColor === recentColor) {
+                            if (this.getGroupLiberties(rightGroup).length > 1) {
+                                disabled = true
+                            }
+                        }
+                    }
+
+                }
+
+                //Condition for piece below
+                if (downColor != recentColor) {
+                    if (this.getGroupLiberties(downGroup).length === 1) {
+                        if (upColor === recentColor) {
+                            if (this.getGroupLiberties(upGroup).length > 1) {
+                                disabled = true
+                            }
+                        }
+
+                        if (leftColor === recentColor) {
+                            if (this.getGroupLiberties(leftGroup).length > 1) {
+                                disabled = true
+                            }
+                        }
+
+                        if (rightColor === recentColor) {
+                            if (this.getGroupLiberties(rightGroup).length > 1) {
+                                disabled = true
+                            }
+                        }
+                    }
+
+                }
+
+                //Condition for piece left
+                if (leftColor != recentColor) {
+                    if (this.getGroupLiberties(leftGroup).length === 1) {
+                        if (upColor === recentColor) {
+                            if (this.getGroupLiberties(upGroup).length > 1) {
+                                disabled = true
+                            }
+                        }
+
+                        if (downColor === recentColor) {
+                            if (this.getGroupLiberties(downGroup).length > 1) {
+                                disabled = true
+                            }
+                        }
+
+                        if (rightColor === recentColor) {
+                            if (this.getGroupLiberties(rightGroup).length > 1) {
+                                disabled = true
+                            }
+                        }
+                    }
+
+                }
+
+                //Condition for piece right
+                if (rightColor != recentColor) {
+                    if (this.getGroupLiberties(rightGroup).length === 1) {
+                        if (upColor === recentColor) {
+                            if (this.getGroupLiberties(upGroup).length > 1) {
+                                disabled = true
+                            }
+                        }
+
+                        if (downColor === recentColor) {
+                            if (this.getGroupLiberties(downGroup).length > 1) {
+                                disabled = true
+                            }
+                        }
+
+                        if (leftColor === recentColor) {
+                            if (this.getGroupLiberties(leftGroup).length > 1) {
+                                disabled = true
+                            }
+                        }
+                    }
+
+                }
+            }
         
             //If the intersection is not disabled, set the styling back based on the screen size
             if (disabled === false) {
