@@ -59,4 +59,18 @@ There are multiple scoring methods and which one you use depends on where in the
 
 # More About This Application
 
+The inital page of the application is the home page which contains the start game button and how to play button, as seen in the picture below.
+
 ![Home Page](https://user-images.githubusercontent.com/92054622/180667368-d5dc844b-f71d-454e-a243-f5c412d0566d.png)
+
+Upon pressing start game, you will be taken to this screen pictured below which consists of the:
+Call game button: ends the game and compute the score
+Move count button: displays the move count on each piece on screen
+How to play button: link to README
+Exit game button: Returns to home screen
+
+To place a piece, click on any of the intersections where a grey buttons appears when hovered over it.
+
+![Game Page](https://user-images.githubusercontent.com/92054622/180668096-e20096d6-fcec-4e99-9575-40cd48c42e9f.png)
+
+
