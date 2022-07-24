@@ -58,10 +58,14 @@ The game ends when both players pass a turn. This means that both players agree 
 There are multiple scoring methods and which one you use depends on where in the world you are. In english speaking countries, area scoring is typically used, and luckily it is easier to code. This score is computed by adding the number of pieces that you captured to the number of liberties you currently have on the board. An important aspect of scoring is that white always starts with a 0.5 point advantage since black always goes first. What this equates to is that if there is a tie, white wins. There are never draws in a game of go. 
 
 # More About This Application
+ 
+## Home Screen
 
 The inital page of the application is the home page which contains the start game button and how to play button, as seen in the picture below.
 
 ![Home Page](https://user-images.githubusercontent.com/92054622/180667368-d5dc844b-f71d-454e-a243-f5c412d0566d.png)
+
+## Game Page
 
 Upon pressing start game, you will be taken to this screen pictured below which consists of the:
 Call game button: ends the game and compute the score
@@ -72,5 +76,17 @@ Exit game button: Returns to home screen
 To place a piece, click on any of the intersections where a grey buttons appears when hovered over it.
 
 ![Game Page](https://user-images.githubusercontent.com/92054622/180668096-e20096d6-fcec-4e99-9575-40cd48c42e9f.png)
+
+## End Game Page
+
+After pressing the call game button, the score is calculated and displayed on screen along with the winner. The study game button will take the user to a screen where they can evalute the game move by move. 
+
+![End Screen](https://user-images.githubusercontent.com/92054622/180668164-dbaace2d-4f79-4c54-89e1-515a7d36ca9e.png)
+
+## Study Game
+
+The study game feature allows the players to review their moves throughtout the game one at a time. A scroll wheel appears on the right hand side that allows the user to control where in the game they want to be. 
+
+![Study Game](https://user-images.githubusercontent.com/92054622/180668199-397f93b2-bc36-4696-8207-585624ff6283.png)
 
 
