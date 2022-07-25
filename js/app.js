@@ -1210,7 +1210,7 @@ const game = {
             if (this.checkIfPlaced(leftPos[0],leftPos[1])) {
                 this.getGroup(posI - 1, posJ)
                 leftGroup = this.group
-                this.group = [];
+                this.group = []; 
             }
     
             if (this.checkIfPlaced(rightPos[0],rightPos[1])) {
@@ -1261,102 +1261,16 @@ const game = {
             //all the groups adjacent to this liberty equal to the recent color have more than 1 liberty
             //disable the intersection
 
-            if (intersectionLibs.length === 0) {
+            if (intersectionLibs.length === 0) { 
 
-                //Condition for piece above
-                if (upColor != recentColor) {
-                    if (this.getGroupLiberties(upGroup).length === 1) {
-                        if (downColor === recentColor) {
-                            if (this.getGroupLiberties(downGroup).length > 1) {
+                if ((upColor != recentColor && this.getGroupLiberties(upGroup).length === 1) || (upColor === recentColor && this.getGroupLiberties(upGroup).length > 1)) {
+                    if ((downColor != recentColor && this.getGroupLiberties(downGroup).length === 1) || (downColor === recentColor && this.getGroupLiberties(downGroup).length > 1)) { 
+                        if ((leftColor != recentColor && this.getGroupLiberties(leftGroup).length === 1) || (leftColor === recentColor && this.getGroupLiberties(leftGroup).length > 1)) {
+                            if ((rightColor != recentColor && this.getGroupLiberties(rightGroup).length === 1) || (rightColor === recentColor && this.getGroupLiberties(rightGroup).length > 1)) {
                                 disabled = true
                             }
-                        }
-
-                        if (leftColor === recentColor) {
-                            if (this.getGroupLiberties(leftGroup).length > 1) {
-                                disabled = true
-                            }
-                        }
-
-                        if (rightColor === recentColor) {
-                            if (this.getGroupLiberties(rightGroup).length > 1) {
-                                disabled = true
-                            }
-                        }
+                        }    
                     }
-
-                }
-
-                //Condition for piece below
-                if (downColor != recentColor) {
-                    if (this.getGroupLiberties(downGroup).length === 1) {
-                        if (upColor === recentColor) {
-                            if (this.getGroupLiberties(upGroup).length > 1) {
-                                disabled = true
-                            }
-                        }
-
-                        if (leftColor === recentColor) {
-                            if (this.getGroupLiberties(leftGroup).length > 1) {
-                                disabled = true
-                            }
-                        }
-
-                        if (rightColor === recentColor) {
-                            if (this.getGroupLiberties(rightGroup).length > 1) {
-                                disabled = true
-                            }
-                        }
-                    }
-
-                }
-
-                //Condition for piece left
-                if (leftColor != recentColor) {
-                    if (this.getGroupLiberties(leftGroup).length === 1) {
-                        if (upColor === recentColor) {
-                            if (this.getGroupLiberties(upGroup).length > 1) {
-                                disabled = true
-                            }
-                        }
-
-                        if (downColor === recentColor) {
-                            if (this.getGroupLiberties(downGroup).length > 1) {
-                                disabled = true
-                            }
-                        }
-
-                        if (rightColor === recentColor) {
-                            if (this.getGroupLiberties(rightGroup).length > 1) {
-                                disabled = true
-                            }
-                        }
-                    }
-
-                }
-
-                //Condition for piece right
-                if (rightColor != recentColor) {
-                    if (this.getGroupLiberties(rightGroup).length === 1) {
-                        if (upColor === recentColor) {
-                            if (this.getGroupLiberties(upGroup).length > 1) {
-                                disabled = true
-                            }
-                        }
-
-                        if (downColor === recentColor) {
-                            if (this.getGroupLiberties(downGroup).length > 1) {
-                                disabled = true
-                            }
-                        }
-
-                        if (leftColor === recentColor) {
-                            if (this.getGroupLiberties(leftGroup).length > 1) {
-                                disabled = true
-                            }
-                        }
-                    }
-
                 }
             }
         
